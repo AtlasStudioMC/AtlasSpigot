@@ -1,40 +1,40 @@
 # AtlasSpigot
 
-A tuned, rebranded configuration layer on top of [Leaf](https://github.com/Winds-Studio/Leaf) (a
-performance-focused Paper fork) for Minecraft 26.2.
-
-This repo contains the **configuration**, not a custom-built server jar. Leaf itself is unmodified -
-grab the official release jar from the link below (or the latest one from Leaf's own releases page)
-and drop these config files in alongside it.
+A tuned, rebranded build of [Leaf](https://github.com/Winds-Studio/Leaf) (a performance-focused
+Paper fork) for Minecraft 26.2.
 
 ## Getting the server jar
 
-Download the official Leaf 26.2 release jar directly from upstream:
-
-https://github.com/Winds-Studio/Leaf/releases/download/ver-26.2/leaf-26.2-90.jar
-
-Or grab it from this repo's [Releases](../../releases) page, where it's attached alongside these
-configs for convenience.
+Grab `AtlasSpigot-26.2.jar` from this repo's [Releases](../../releases) page. It's a real source
+rebuild of Leaf 26.2 (build 90) - not the stock jar - see "What's tuned here" below for what
+changed and why.
 
 ## Setup
 
-1. Put `leaf-26.2-90.jar` in a folder.
-2. Copy everything from this repo into that same folder (`start.sh`, `server.properties`,
+1. Put `AtlasSpigot-26.2.jar` in a folder.
+2. Copy everything else from this repo into that same folder (`start.sh`, `server.properties`,
    `spigot.yml`, `purpur.yml`, `bukkit.yml`, `commands.yml`, `eula.txt`, `config/`).
 3. Run it:
    ```bash
    ./start.sh
    ```
-   (or `java -jar leaf-26.2-90.jar nogui` directly, though `start.sh` carries the tuned JVM flags)
+   (or `java -jar AtlasSpigot-26.2.jar nogui` directly, though `start.sh` carries the tuned JVM
+   flags)
 
-Requires Java 17+.
+Requires Java 25 to build from source (see `source-patches/`); the built jar itself only needs
+Java 17+ to run.
 
 ## What's tuned here
 
-- **Branding**: MOTD, server-list name, console title, and crash-report identifier all read
-  "AtlasSpigot" (`server.properties` + `config/leaf-global.yml`'s `misc.rebrand` section). The
-  console startup banner and F3 client brand are unaffected - those are hardcoded in Leaf's own
-  source and would require a full source rebuild to change.
+- **Branding**: MOTD, server-list name, console title, crash-report identifier, the console startup
+  banner, the client-facing F3 brand text, and `Bukkit.getName()` (used by plugins for
+  compatibility checks) all read "AtlasSpigot". The config-level pieces come from
+  `server.properties` + `config/leaf-global.yml`'s `misc.rebrand` section. The rest required one
+  source change - `CraftServer.getName()` hardcoded Leaf's raw build-info name instead of using
+  the same configurable brand `getServerModName()` (the method that actually feeds the client's F3
+  brand packet) already used. See `source-patches/craftserver-brand-fix.diff` for the exact change,
+  applied against `paper-server/src/main/java/org/bukkit/craftbukkit/CraftServer.java` after
+  running `./gradlew applyAllPatches` on a Leaf `ver/26.2` checkout.
 - **JVM/GC** (`start.sh`): Aikar's flags, G1GC tuned for an 8GB heap. `-XX:+AlwaysPreTouch` is
   deliberately left out - it roughly doubles startup time in exchange for a marginal, usually
   unnoticeable steady-state benefit.
