@@ -33,10 +33,11 @@ into the jar's build manifest, not just config - see below), but none of the per
 error. Copy the config files anyway if you want the tuning, not just the name.
 
 **On a hosting panel** (Pterodactyl/Spaceify/etc.) that generates its own startup command: that
-command replaces `start.sh`'s JVM flags, which is usually fine (panels often size the heap via
-`-XX:MaxRAMPercentage` against the container's memory limit instead of a fixed `-Xmx`, which is a
-reasonable alternative) - but you still need to upload the config files from this repo into the
-container's server directory yourself, since the panel has no way to know they exist.
+command replaces `start.sh`'s JVM flags entirely, which also means it replaces the G1GC tuning -
+see [`PANEL_STARTUP_FLAGS.md`](PANEL_STARTUP_FLAGS.md) for the same tuning adapted to a panel's
+dynamic `-XX:MaxRAMPercentage` sizing style. You still need to upload the config files from this
+repo into the container's server directory yourself either way, since the panel has no way to know
+they exist.
 
 ## What's tuned here
 
