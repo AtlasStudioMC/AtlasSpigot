@@ -172,30 +172,20 @@ Leaf, each as a plain diff against the file it touches.
 
 ## Statistics
 
-Unlike Leaf's own [`#statistics`](https://github.com/Winds-Studio/Leaf#statistics) section, there's no
-real graph to embed here yet — a bStats badge only shows something meaningful once actual servers are
-reporting to it, and AtlasSpigot doesn't have that history yet, since this whole build only exists as
-of this repo.
+[![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
-What's true right now: the jar's bundled bStats client was renamed from Leaf's own project to a
-dedicated AtlasSpigot one (see [`metrics-atlas-rename.diff`](source-patches/metrics-atlas-rename.diff)) -
-before this change, every AtlasSpigot server was silently reporting into *Leaf's* stats page instead of
-having one of its own. That's fixed, but it means the project doesn't exist on bStats yet either - the
-software name is only recognized as a distinct entity once it's registered.
+This is a real, registered bStats project (id `33733`) - it started at zero, same as any new software's
+does, and only grows as real AtlasSpigot servers actually run and report in. Getting the jar to report
+here at all took two real fixes, not just a config toggle:
 
-To turn this into a real, live graph like Yatopia's:
-
-1. Sign in to [bstats.org](https://bstats.org) with GitHub and add a new software under the
-   **Server Software** category named exactly `AtlasSpigot` - the jar already reports under that name,
-   so no further code change is needed once that exists.
-2. Swap the block below from a code fence into live Markdown:
-
-   ```
-   [![bStats Graph Data](https://bstats.org/signatures/server-implementation/AtlasSpigot.svg)](https://bstats.org/plugin/server-implementation/AtlasSpigot)
-   ```
-
-Left as a code block on purpose - rendering it live before the project exists would just be a broken
-image link, and that's worse than admitting there's nothing to show yet.
+1. The bundled metrics client was originally hardcoded to Leaf's own bStats project - every AtlasSpigot
+   server was silently reporting into *Leaf's* stats, not one of its own.
+2. The special curated "Server Software" category Paper/Purpur/Leaf/Yatopia use (the one behind their
+   `signatures/server-implementation/*` badges) turned out not to be self-serve creatable - it's an
+   admin-curated list, confirmed by that exact badge path 404ing for an unregistered name. What *is*
+   self-serve is registering as a regular Bukkit/Spigot service, which is what this project actually is -
+   so the jar's metrics client was rewritten to speak that schema (a real service id, not just a name
+   string) instead. See [`metrics-atlas-bstats-service.diff`](source-patches/metrics-atlas-bstats-service.diff).
 
 Made with <span style="color: #e25555;">&#9829;</span> on Earth.
 
