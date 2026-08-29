@@ -129,7 +129,7 @@ performance:
     # Skip trivial End surface rule build process.
     # May be incompatible with some datapacks that modify End world generation.
     enabled: false
-  optimize-entity-activation: false
+  optimize-entity-activation: true
   # Whether to only tick / update items in main hand and offhand instead of the entire inventory.
   only-tick-items-in-hand: true
   optimize-mob-spawning: false
