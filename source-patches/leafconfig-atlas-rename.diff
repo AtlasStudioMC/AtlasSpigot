@@ -1,0 +1,28 @@
+--- a/leaf-server/src/main/java/org/dreeam/leaf/config/LeafConfig.java
++++ b/leaf-server/src/main/java/org/dreeam/leaf/config/LeafConfig.java
+@@ -53,8 +53,8 @@
+     protected static final File CONFIG_DIRECTORY = new File("config");
+     protected static final String CONFIG_MODULE_PACKAGE = "org.dreeam.leaf.config.modules";
+-    protected static final String GLOBAL_CONFIG_FILE = "leaf-global.yml";
+-    protected static final String DEFAULT_WORLD_CONFIG_FILE = "leaf-world-defaults.yml"; // Leaf TODO - Per world config
++    protected static final String GLOBAL_CONFIG_FILE = "atlas-global.yml"; // AtlasSpigot - renamed from leaf-global.yml
++    protected static final String DEFAULT_WORLD_CONFIG_FILE = "atlas-world-defaults.yml"; // Leaf TODO - Per world config // AtlasSpigot - renamed from leaf-world-defaults.yml
+@@ -231,7 +231,7 @@
+     private static List<String> buildSparkExtraConfigs() {
+         List<String> extraConfigs = new ArrayList<>(Arrays.asList(
+-            "config/leaf-global.yml",
++            CONFIG_DIRECTORY.getName() + "/" + GLOBAL_CONFIG_FILE, // AtlasSpigot - use the renamed constant instead of a stale hardcoded path
+             "config/gale-global.yml",
+             "config/gale-world-defaults.yml"
+         ));
+
+--- a/leaf-server/src/minecraft/java/org/purpurmc/purpur/PurpurConfig.java
++++ b/leaf-server/src/minecraft/java/org/purpurmc/purpur/PurpurConfig.java
+@@ -64,7 +64,7 @@
+             config.load(CONFIG_FILE);
+         } catch (IOException ignore) {
+         } catch (InvalidConfigurationException ex) {
+-            Bukkit.getLogger().log(Level.SEVERE, "Could not load purpur.yml, please correct your syntax errors", ex);
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load atlas.yml, please correct your syntax errors", ex); // AtlasSpigot - renamed from purpur.yml
+             throw Throwables.propagate(ex);
+         }
