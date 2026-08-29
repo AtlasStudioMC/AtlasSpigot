@@ -12,9 +12,8 @@ here is documented with *why*, not just *what* — see [What's tuned here](#what
 ## Quick start
 
 1. Download `AtlasSpigot-26.2.jar` from the [**Releases**](../../releases) page.
-2. Copy **everything else in this repo** into the same folder as the jar:
-   `start.sh`, `server.properties`, `spigot.yml`, `atlas.yml`, `bukkit.yml`, `commands.yml`,
-   `eula.txt`, and the whole `config/` directory.
+2. Copy **everything else in this repo** into the same folder as the jar: `start.sh`,
+   `server.properties`, `spigot.yml`, `eula.txt`, and the whole `config/` directory.
 3. Open `eula.txt` and set `eula=true` — vanilla Minecraft requires this; the server won't start
    without it.
 4. Start it:
@@ -38,6 +37,23 @@ regardless, since the panel has no way to know they exist.
 
 Java 17+ to run the jar. Java 25 if you want to build it from source yourself — see
 [Building from source](#building-from-source).
+
+### Why so many config files, and why they can't all be one
+
+Bukkit, Spigot, Purpur, Paper, and Leaf/Gale are five separate projects stacked on top of each
+other, and each one owns and independently saves its own config file - that's not this repo's
+choice, it's how the whole ecosystem is built. Merging them isn't just a copy-paste job: each
+system loads its file into memory, then writes the *whole file* back out on save. Point two of them
+at the same physical file and whichever one saves last silently overwrites the other's settings
+with its own - a real, silent way to lose configuration, not a hypothetical one.
+
+What *is* safe, and what this repo actually does: only ship files that have been genuinely
+customized. `purpur.yml` (renamed `atlas.yml`), `bukkit.yml`, `commands.yml`, `gale-global.yml`,
+and `gale-world-defaults.yml` were checked and found to have nothing worth changing at the generic
+level - Purpur in particular is a gameplay-feature project, not a performance one, and its config
+reflects that. They're not in this repo because the server generates them itself, with identical
+content, whether they're present or not. That's five fewer files to manage without touching
+anything real.
 
 ## What's tuned here
 
