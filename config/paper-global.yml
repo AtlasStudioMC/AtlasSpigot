@@ -85,7 +85,7 @@ misc:
   enable-nether: true
   fix-far-end-terrain-generation: true
   load-permissions-yml-before-plugins: true
-  max-joins-per-tick: 5
+  max-joins-per-tick: 25
   max-tracking-combat-entries: 10240
   prevent-negative-villager-demand: false
   region-file-cache-size: 256
