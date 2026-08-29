@@ -141,7 +141,7 @@ performance:
   optimize-waypoint: false
   # Whether to use optimized powered rails.
   # The implementation is based on RailOptimization made by GitHub@FxMorin
-  optimized-powered-rails: false
+  optimized-powered-rails: true
   reduce-packets:
     reduce-entity-move-packets: true
     reduce-entity-motion-packets: true
