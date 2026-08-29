@@ -1,7 +1,15 @@
-# AtlasSpigot
+<div align="center">
 
-A tuned, rebranded build of **[Leaf](https://github.com/Winds-Studio/Leaf)** — a performance-focused
-[Paper](https://papermc.io/) fork — for Minecraft **26.2**.
+## AtlasSpigot
+
+[![License](https://img.shields.io/badge/license-mixed%20(MIT%2FGPL--3.0)-blue?logo=github)](LICENSE.md)
+[![Minecraft](https://img.shields.io/badge/minecraft-26.2-blueviolet)](https://github.com/Winds-Studio/Leaf)
+[![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
+
+A tuned, rebranded build of [Leaf](https://github.com/Winds-Studio/Leaf) — a performance-focused
+[Paper](https://papermc.io/) fork — for Minecraft 26.2.
+
+</div>
 
 AtlasSpigot isn't a fork from scratch: it's Leaf, source-rebuilt with a real brand change baked into
 the jar itself (not just a config overlay) and a set of scale/resource tuning changes layered on
@@ -9,14 +17,22 @@ top, each checked against Leaf's own source and issue tracker before being enabl
 here is documented with *why*, not just *what* — see [What's tuned here](#whats-tuned-here) and
 [`source-patches/`](source-patches/) for the actual diffs.
 
+This is a private, self-hosted build with no CI pipeline, Discord, or sponsors of its own — those
+usual badge-row staples are left out rather than faked. What's above is real: a static license badge
+backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics) graph.
+
+## Downloads
+
+Grab `AtlasSpigot-26.2.jar` from the [**Releases**](../../releases) page — a new release ships for
+every change, so the top of that list is always the current build.
+
 ## Quick start
 
-1. Download `AtlasSpigot-26.2.jar` from the [**Releases**](../../releases) page.
-2. Copy **everything else in this repo** into the same folder as the jar: `start.sh`,
-   `server.properties`, `spigot.yml`, `eula.txt`, and the whole `config/` directory.
-3. Open `eula.txt` and set `eula=true` — vanilla Minecraft requires this; the server won't start
+1. Copy **everything else in this repo** into the same folder as the jar you downloaded above:
+   `start.sh`, `server.properties`, `spigot.yml`, `eula.txt`, and the whole `config/` directory.
+2. Open `eula.txt` and set `eula=true` — vanilla Minecraft requires this; the server won't start
    without it.
-4. Start it:
+3. Start it:
 
    ```bash
    ./start.sh
@@ -36,7 +52,7 @@ regardless, since the panel has no way to know they exist.
 > repo, not just the jar.
 
 Java 17+ to run the jar. Java 25 if you want to build it from source yourself — see
-[Building from source](#building-from-source).
+[Building and setting up](#building-and-setting-up).
 
 ### Why so many config files, and why they can't all be one
 
@@ -157,18 +173,38 @@ chunk data) that no setting erases. Getting into the thousands of concurrent pla
 [Velocity](https://papermc.io/software/velocity) proxy in front of multiple backend instances, not
 a single-server config problem.
 
-## Building from source
+## Building and setting up
+
+#### Initial setup
+
+Clone Leaf itself (this repo only holds the config layer and the diffs on top of it, not Leaf's
+own source) and apply its patches:
 
 ```bash
 git clone --branch ver/26.2 --single-branch https://github.com/Winds-Studio/Leaf.git
 cd Leaf
 ./gradlew applyAllPatches
-# apply the diffs in source-patches/ to the applied tree, then:
+```
+
+Then apply every diff in this repo's [`source-patches/`](source-patches/) to the resulting tree -
+each one documents the exact file and hunk it touches.
+
+#### Compiling
+
+```bash
 ./gradlew createPaperclipJar
 ```
 
-Requires Java 25. See [`source-patches/`](source-patches/) for every change made on top of stock
-Leaf, each as a plain diff against the file it touches.
+Requires Java 25. The output is a self-bootstrapping Paperclip jar - the same kind published on
+this repo's [Releases](../../releases) page.
+
+## License
+
+No single license covers this the way "MIT" alone would suggest - Leaf inherits a mix from
+upstream (Paperweight/most patches: MIT; some patches: GPL-3.0, LGPL-3.0, or Apache-2.0 per their
+own header; **compiled binaries: GPL-3.0-only**), and this repo's own additions
+([`source-patches/`](source-patches/)) are MIT. Full breakdown in [`LICENSE.md`](LICENSE.md) - the
+badge at the top links there rather than overclaiming a single license that wouldn't be accurate.
 
 ## Statistics
 
