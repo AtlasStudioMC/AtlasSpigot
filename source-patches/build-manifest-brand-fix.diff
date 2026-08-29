@@ -1,0 +1,16 @@
+--- a/leaf-server/build.gradle.kts
++++ b/leaf-server/build.gradle.kts
+@@ -243,10 +243,10 @@
+-            "Specification-Title" to "Leaf", // Leaf - Rebrand
++            "Specification-Title" to "AtlasSpigot", // Leaf - Rebrand // AtlasSpigot - Rebrand
+             "Specification-Version" to project.version,
+             "Specification-Vendor" to "Winds Studio", // Leaf - Rebrand
+             "Brand-Id" to "winds-studio:leaf", // Leaf - Rebrand
+-            "Brand-Name" to "Leaf", // Leaf - Rebrand
++            "Brand-Name" to "AtlasSpigot", // Leaf - Rebrand // AtlasSpigot - Rebrand
+
+--- a/paper-server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
++++ b/paper-server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+@@ -38,1 +38,1 @@
+-    private static final String BRAND_LEAF_NAME = "Leaf";
++    private static final String BRAND_LEAF_NAME = "AtlasSpigot"; // AtlasSpigot - fallback default, superseded in practice by the Brand-Name manifest attribute
