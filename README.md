@@ -91,7 +91,7 @@ Full detail and diffs: [`source-patches/build-manifest-brand-fix.diff`](source-p
 | Scale | `view-distance`/`simulation-distance`: 10/10 → 6/4 | The biggest lever for per-player memory/CPU cost at high concurrent player counts. |
 | Scale | `entity-tracking-range` roughly halved | Less network/CPU overhead in crowded areas — this cost scales with entities × nearby players. |
 | Scale | `max-joins-per-tick`: 5 → 25 | Removes an artificial ~100/sec cap on how fast a mass-reconnect queue drains. |
-| Mobs/AI | Distance-based AI throttling (DAB), `optimize-entity-activation` | Entities far from any player tick less often; entity collection for activation ranges is deduplicated across overlapping players instead of rescanned per player. Verified against the source as behavior-preserving. |
+| Mobs/AI | Distance-based AI throttling (DAB) | Entities far from any player tick less often. |
 | World | `ALTERNATE_CURRENT` redstone engine, `optimize-explosions` | Well-established, largely vanilla-compatible engine swaps for two of the heaviest world-simulation hot paths. |
 | World | `optimized-powered-rails` | Rewrites powered/activator rail update propagation to run from a single rail instead of each block iterating separately — up to 4x faster toggling, same vanilla order, per the implementation's own description. |
 | I/O | `dont-save-primed-tnt`, `dont-save-falling-block` | Skips writing these to disk on chunk save/unload — cuts I/O when a lot of TNT is active. Trade-off: those entities don't survive an unload+reload. |
@@ -101,6 +101,15 @@ Full detail and diffs: [`source-patches/build-manifest-brand-fix.diff`](source-p
 
 Checked and rejected, with reasons — not just left at defaults by omission:
 
+- **`optimize-entity-activation`** — briefly enabled in v8/v9, then reverted. Reading the ~76-line
+  patch, it looked safe (just deduplicates entity collection across overlapping player activation
+  ranges, same DAB/priority logic). What that read missed: Leaf's own source tags the field
+  `@Experimental`, an explicit signal from the maintainers themselves that they don't consider it
+  fully battle-tested yet, regardless of how clean the diff reads. No open bug reports found either
+  way - this isn't "known broken," it's "not verified enough to keep on by this project's own
+  admission." Caught during a full re-verification pass (boot log showed
+  `[LeafConfig] You have following experimental module(s) enabled`) and reverted before it shipped
+  any further. Worth revisiting once Leaf itself drops the annotation.
 - **`optimize-mob-spawning`, `optimize-random-tick`** — both are deep rewrites of core vanilla
   mechanics (mob spawning, and the random ticks driving crop growth/leaf decay/fire spread).
   `optimize-mob-spawning`'s own patch notes say it "reduce[s] random calls" — a real change to
