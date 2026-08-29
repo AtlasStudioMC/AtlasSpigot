@@ -170,6 +170,35 @@ cd Leaf
 Requires Java 25. See [`source-patches/`](source-patches/) for every change made on top of stock
 Leaf, each as a plain diff against the file it touches.
 
+## Statistics
+
+Unlike Leaf's own [`#statistics`](https://github.com/Winds-Studio/Leaf#statistics) section, there's no
+real graph to embed here yet — a bStats badge only shows something meaningful once actual servers are
+reporting to it, and AtlasSpigot doesn't have that history yet, since this whole build only exists as
+of this repo.
+
+What's true right now: the jar's bundled bStats client was renamed from Leaf's own project to a
+dedicated AtlasSpigot one (see [`metrics-atlas-rename.diff`](source-patches/metrics-atlas-rename.diff)) -
+before this change, every AtlasSpigot server was silently reporting into *Leaf's* stats page instead of
+having one of its own. That's fixed, but it means the project doesn't exist on bStats yet either - the
+software name is only recognized as a distinct entity once it's registered.
+
+To turn this into a real, live graph like Yatopia's:
+
+1. Sign in to [bstats.org](https://bstats.org) with GitHub and add a new software under the
+   **Server Software** category named exactly `AtlasSpigot` - the jar already reports under that name,
+   so no further code change is needed once that exists.
+2. Swap the block below from a code fence into live Markdown:
+
+   ```
+   [![bStats Graph Data](https://bstats.org/signatures/server-implementation/AtlasSpigot.svg)](https://bstats.org/plugin/server-implementation/AtlasSpigot)
+   ```
+
+Left as a code block on purpose - rendering it live before the project exists would just be a broken
+image link, and that's worse than admitting there's nothing to show yet.
+
+Made with <span style="color: #e25555;">&#9829;</span> on Earth.
+
 ## Credits
 
 Built on **[Leaf](https://github.com/Winds-Studio/Leaf)**, which itself aggregates work from
