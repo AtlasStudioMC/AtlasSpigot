@@ -123,6 +123,24 @@ Checked and rejected, with reasons — not just left at defaults by omission:
   fully re-verify for this build.
 - **`LINEAR_V2` region format** — see the table above; `B_LINEAR` was used instead.
 
+### How settings are actually screened
+
+Not vibes - a checklist, applied the same way every time before anything gets enabled:
+
+1. Read the actual patch/diff, not just the config comment.
+2. Check for an explicit upstream caution flag: Leaf's `@Experimental`/`@Deprecated` annotations, or
+   Paper's own `unsupported-settings` config section. Either one is treated as a hard no by itself -
+   not something to override just because the code reads cleanly. This is exactly what
+   `optimize-entity-activation` above slipped through on the first pass.
+3. Search Leaf's issue tracker for open reports mentioning the feature.
+4. Boot with it enabled and read the *entire* log, not a grep for expected lines.
+5. Where practical, verify past just "it booted" - a simulated client completing login, or a
+   deliberately-broken config proving a setting actually does what it claims.
+
+A one-time systematic pass through every currently-enabled setting against steps 2-3 (not just new
+additions) is done periodically, not only when adding something new - that's how the
+`optimize-entity-activation` regression got caught two releases after it shipped, not zero.
+
 ## First-boot startup time
 
 A brand-new world has to generate its spawn chunks before the server can finish starting — that's a
