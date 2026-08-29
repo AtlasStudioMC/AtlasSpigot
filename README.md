@@ -21,6 +21,20 @@ This is a private, self-hosted build with no CI pipeline, Discord, or sponsors o
 usual badge-row staples are left out rather than faked. What's above is real: a static license badge
 backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics) graph.
 
+### Contents
+
+- [Downloads](#downloads)
+- [Quick start](#quick-start)
+- [What's tuned here](#whats-tuned-here) — [branding](#branding), [performance](#performance),
+  [what's deliberately not enabled](#deliberately-not-enabled),
+  [how settings are screened](#how-settings-are-actually-screened)
+- [First-boot startup time](#first-boot-startup-time)
+- [Handling a lot of players](#handling-a-lot-of-players)
+- [Building and setting up](#building-and-setting-up)
+- [License](#license)
+- [Statistics](#statistics)
+- [Credits](#credits)
+
 ## Downloads
 
 Grab `AtlasSpigot-26.2.jar` from the [**Releases**](../../releases) page — a new release ships for
@@ -85,7 +99,8 @@ Two config files were renamed too, with matching source changes so the rename is
 cosmetic: `purpur.yml` → `atlas.yml`, `config/leaf-global.yml` → `config/atlas-global.yml`.
 
 Left alone, on purpose:
-- `LICENSE.md` and copyright headers — an MIT license requirement, not branding.
+- Leaf's own in-tree `LICENSE.md` and copyright headers (distinct from [this repo's `LICENSE.md`](LICENSE.md),
+  which covers the distribution as a whole) — a license requirement, not branding.
 - In-file credit comments pointing at Leaf/Purpur's real websites and docs — honest attribution to
   the code this is actually built on.
 - The internal `Brand-Id` (`winds-studio:leaf`) — an identifier other code checks for plugin
@@ -203,8 +218,10 @@ this repo's [Releases](../../releases) page.
 No single license covers this the way "MIT" alone would suggest - Leaf inherits a mix from
 upstream (Paperweight/most patches: MIT; some patches: GPL-3.0, LGPL-3.0, or Apache-2.0 per their
 own header; **compiled binaries: GPL-3.0-only**), and this repo's own additions
-([`source-patches/`](source-patches/)) are MIT. Full breakdown in [`LICENSE.md`](LICENSE.md) - the
-badge at the top links there rather than overclaiming a single license that wouldn't be accurate.
+([`source-patches/`](source-patches/)) are MIT. Full text for each license lives in
+[`licenses/`](licenses/), copied verbatim from Leaf itself; [`LICENSE.md`](LICENSE.md) has the
+breakdown of what covers what. The badge at the top links there rather than overclaiming a single
+license that wouldn't be accurate.
 
 ## Statistics
 
