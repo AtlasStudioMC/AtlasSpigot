@@ -64,8 +64,8 @@ performance:
     # Disable save primed tnt on chunk unloads.
     # Useful for redstone/technical servers, can prevent machines from being exploded by TNT,
     # when player disconnected caused by Internet issue.
-    dont-save-primed-tnt: false
-    dont-save-falling-block: false
+    dont-save-primed-tnt: true
+    dont-save-falling-block: true
   # Optimizes entity brains when
   # they're far away from the player
   dab:
