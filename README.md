@@ -27,11 +27,10 @@ changed and why.
 Requires Java 25 to build from source (see `source-patches/`); the built jar itself only needs
 Java 17+ to run.
 
-**If you only copy the jar and skip step 2**: the server still boots, but every setting in this
-README is gone - branding falls back to "Leaf", and none of the performance tuning is active. It
-fails silently, not with an error, so it's easy to miss. If your console banner says "Leaf" instead
-of "AtlasSpigot", this is almost always why - check that `config/atlas-global.yml` actually exists
-alongside the jar and has the `misc.rebrand` section shown below.
+**If you only copy the jar and skip step 2**: branding still shows "AtlasSpigot" (it's now baked
+into the jar's build manifest, not just config - see below), but none of the performance tuning
+(view distance, chunk settings, JVM flags, etc.) is active, and that part fails silently with no
+error. Copy the config files anyway if you want the tuning, not just the name.
 
 **On a hosting panel** (Pterodactyl/Spaceify/etc.) that generates its own startup command: that
 command replaces `start.sh`'s JVM flags, which is usually fine (panels often size the heap via
@@ -41,21 +40,29 @@ container's server directory yourself, since the panel has no way to know they e
 
 ## What's tuned here
 
-- **Branding**: MOTD, server-list name, console title, crash-report identifier, the console startup
-  banner, the client-facing F3 brand text, and `Bukkit.getName()` (used by plugins for
-  compatibility checks) all read "AtlasSpigot". The config-level pieces come from
-  `server.properties` + `config/atlas-global.yml`'s `misc.rebrand` section. The rest required one
-  source change - `CraftServer.getName()` hardcoded Leaf's raw build-info name instead of using
-  the same configurable brand `getServerModName()` (the method that actually feeds the client's F3
-  brand packet) already used. Verified with an actual simulated client connection, not just a log
-  line - see `source-patches/craftserver-brand-fix.diff` for the exact change, applied against
-  `paper-server/src/main/java/org/bukkit/craftbukkit/CraftServer.java` after running
-  `./gradlew applyAllPatches` on a Leaf `ver/26.2` checkout.
+- **Branding**: MOTD, server-list name, console title, crash-report identifier, the early
+  `[bootstrap]` startup line, the console startup banner, the client-facing F3 brand text, and
+  `Bukkit.getName()` (used by plugins for compatibility checks) all read "AtlasSpigot" - **by
+  default, with zero config present**. This is now fixed at the actual build-time source of truth:
+  Paper/Leaf's `Brand-Name` jar manifest attribute (`leaf-server/build.gradle.kts`), which is what
+  `ServerBuildInfo.brandName()` reads and every other brand-related call ultimately traces back to.
+  On top of that, `CraftServer.getName()` was hardcoded to a `final` field snapshotting the
+  build-info name at construction time instead of reading the same live, configurable brand
+  `getServerModName()` (the method that actually feeds the client's F3 brand packet) already used -
+  fixed so runtime customization via `misc.rebrand.server-mod-name` still works for anyone who wants
+  a name other than "AtlasSpigot". Verified twice: once with an actual simulated client connection
+  capturing the literal brand packet bytes, and again by booting with *no config directory at all*
+  and confirming every one of the lines above still said "AtlasSpigot". See
+  `source-patches/build-manifest-brand-fix.diff` and `source-patches/craftserver-brand-fix.diff`.
   - Config files renamed too: `purpur.yml` -> `atlas.yml`, `config/leaf-global.yml` ->
     `config/atlas-global.yml` (source change in `Main.java` and `LeafConfig.java` respectively -
     see `source-patches/`). In-file credit comments pointing at the real upstream projects
-    (Leaf/Purpur websites, docs, GitHub) are left alone - that's honest attribution to the actual
-    code this is built on, not something worth papering over.
+    (Leaf/Purpur websites, docs, GitHub) and the `LICENSE.md`/copyright notices are left alone -
+    that's honest attribution and a legal requirement of the MIT license this is built under, not
+    branding to strip. The internal `Brand-Id` (`winds-studio:leaf`, used for plugin compatibility
+    checks against Paper/Gale/Pufferfish/Purpur) is also left untouched deliberately - that's an
+    identifier other code checks against, not display text, and changing it risks breaking plugin
+    compatibility detection for no visible benefit.
 - **JVM/GC** (`start.sh`): Aikar's flags, G1GC tuned for an 8GB heap. `-XX:+AlwaysPreTouch` is
   deliberately left out - it roughly doubles startup time in exchange for a marginal, usually
   unnoticeable steady-state benefit.
