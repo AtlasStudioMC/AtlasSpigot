@@ -3,11 +3,11 @@
 ## AtlasSpigot
 
 [![License](https://img.shields.io/badge/license-mixed%20(MIT%2FGPL--3.0)-blue?logo=github)](LICENSE.md)
-[![Minecraft](https://img.shields.io/badge/minecraft-26.2-blueviolet)](https://github.com/Winds-Studio/Leaf)
+[![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%201.21.11-blueviolet)](https://github.com/Winds-Studio/Leaf)
 [![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
 A tuned, rebranded build of [Leaf](https://github.com/Winds-Studio/Leaf) — a performance-focused
-[Paper](https://papermc.io/) fork — for Minecraft 26.2.
+[Paper](https://papermc.io/) fork — for Minecraft 26.2 and 1.21.11.
 
 </div>
 
@@ -17,8 +17,8 @@ top, each checked against Leaf's own source and issue tracker before being enabl
 here is documented with *why*, not just *what* — see [What's tuned here](#whats-tuned-here) and
 [`source-patches/`](source-patches/) for the actual diffs.
 
-This is a private, self-hosted build with no CI pipeline, Discord, or sponsors of its own — those
-usual badge-row staples are left out rather than faked. What's above is real: a static license badge
+This is a self-hosted build with no CI pipeline, Discord, or sponsors of its own — those usual
+badge-row staples are left out rather than faked. What's above is real: a static license badge
 backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics) graph.
 
 ### Contents
@@ -37,8 +37,17 @@ backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics)
 
 ## Downloads
 
-Grab `AtlasSpigot-26.2.jar` from the [**Releases**](../../releases) page — a new release ships for
-every change, so the top of that list is always the current build.
+Two version tracks, each with its own tag prefix on the [**Releases**](../../releases) page:
+
+- **26.2** — `atlasspigot-26.2-N` tags, jar + config live at the repo root.
+- **1.21.11** — `atlasspigot-1.21.11-N` tags, jar + config live under [`1.21.11/`](1.21.11/).
+
+A new release ships for every change on whichever track it applies to, so the top of each tag
+prefix's history is always that track's current build. Same tuning philosophy on both — see
+[`1.21.11/source-patches/`](1.21.11/source-patches/) for that track's diffs; a couple of settings
+differ only because this older Leaf branch's own stock defaults differ (documented inline in
+[`1.21.11/spigot.yml`](1.21.11/spigot.yml)'s entity-tracking-range, which halves *this*
+version's stock numbers rather than reusing 26.2's).
 
 ## Quick start
 
