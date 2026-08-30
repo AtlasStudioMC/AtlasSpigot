@@ -1,0 +1,4 @@
+label=atlas_baseline mobcount_target=300 entities_spawned=300 samples=400 avg_mspt=4.8745 min_mspt=1.0368 max_mspt=18.2696
+label=paper_baseline mobcount_target=300 entities_spawned=300 samples=400 avg_mspt=6.7350 min_mspt=1.8568 max_mspt=23.4446
+label=atlas_increased mobcount_target=1000 entities_spawned=1000 samples=400 avg_mspt=8.1114 min_mspt=1.8222 max_mspt=30.4079
+label=paper_increased mobcount_target=1000 entities_spawned=1000 samples=400 avg_mspt=25.7943 min_mspt=5.7910 max_mspt=64.6849
