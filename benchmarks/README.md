@@ -21,3 +21,19 @@ dependency from PaperMC's Maven repo), drop the jar in both servers' `plugins/` 
 launch each with `-Datlas.bench.label=<name> -Datlas.bench.mobcount=<N>` (plus
 `-Datlas.bench.warmup=<ticks>` / `-Datlas.bench.measure=<ticks>` to override the 140/400 tick
 defaults).
+
+## Chunk generation
+
+`atlas-chunkbench/` is the plugin behind the Benchmarks page's "Chunk generation time" section.
+After startup it force-generates a fixed square chunk region (`World#getChunkAtAsync(x, z, true)`
+for every chunk) centered on the same test coordinates, timing real wall-clock elapsed time from
+the first request to the last chunk completing, then writes the result to
+`atlas-chunkbench-result.txt` and shuts down. No players connected - a clean measure of raw
+generation throughput, separate from the steady-state tick cost `atlas-bench` measures.
+
+`results-chunkgen-1.21.4.txt` is the raw output from the runs behind the current page: same seed,
+same JVM flags, same hardware as the entity-performance test, radius 50 (10,201 chunks), one run
+each. AtlasSpigot: 121.868s. Paper: 134.805s.
+
+Launch with `-Datlas.chunkbench.label=<name> -Datlas.chunkbench.radius=<N>` (radius is chunks in
+each direction from center, so `N=50` generates a 101x101 region).
