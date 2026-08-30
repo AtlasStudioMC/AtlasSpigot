@@ -3,7 +3,7 @@
 ## AtlasSpigot
 
 [![License](https://img.shields.io/badge/license-mixed%20(MIT%2FGPL--3.0)-blue?logo=github)](LICENSE.md)
-[![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.8%20%7C%201.21.7-blueviolet)](https://github.com/Winds-Studio/Leaf)
+[![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.8%20%7C%201.21.7%20%7C%201.21.6-blueviolet)](https://github.com/Winds-Studio/Leaf)
 [![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
 A tuned, rebranded Minecraft server spanning [Paper](https://github.com/PaperMC/Paper),
@@ -53,6 +53,7 @@ actually shipped vs still planned; here's what's released right now:
 | 1.21.11 | Leaf | `atlasspigot-1.21.11-N` | [`1.21.11/`](1.21.11/) |
 | 1.21.8 | Leaf | `atlasspigot-1.21.8-N` | [`1.21.8/`](1.21.8/) ([notes](1.21.8/NOTES.md)) |
 | 1.21.7 | Leaf | `atlasspigot-1.21.7-N` | [`1.21.7/`](1.21.7/) ([notes](1.21.7/NOTES.md)) |
+| 1.21.6 | Leaf | `atlasspigot-1.21.6-N` | [`1.21.6/`](1.21.6/) ([notes](1.21.6/NOTES.md)) |
 
 A new release ships for every change on whichever track it applies to, so the top of each tag
 prefix's history is always that track's current build. Same tuning philosophy on every track - a

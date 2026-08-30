@@ -25,7 +25,7 @@ list, not built yet - never claimed as available before it actually ships.
 | 1.21.11 | Leaf | released |
 | 1.21.8 | Leaf | released |
 | 1.21.7 | Leaf | released |
-| 1.21.6 | Leaf | planned |
+| 1.21.6 | Leaf | released |
 | 1.21.5 | Leaf | planned |
 | 1.21.4 | Leaf | planned |
 | 1.21.3 | Purpur | planned |
