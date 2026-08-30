@@ -1,0 +1,37 @@
+--- a/Purpur-Server/build.gradle.kts
++++ b/Purpur-Server/build.gradle.kts
+@@ -67,7 +67,7 @@ dependencies {
+     // Paper end - Remap reflection
+     // Paper start - spark
+     implementation("me.lucko:spark-api:0.1-20240720.200737-2")
+-    implementation("me.lucko:spark-paper:1.10.84-20240720.204128-1")
++    implementation("me.lucko:spark-paper:1.10.133-20250413.112336-1") // AtlasSpigot - the pinned 1.10.84 build's bundled native async-profiler lib segfaults (SIGSEGV in VMThread::nativeThreadId) on this environment's JVM/arch; bumped to the newest available snapshot to fix the crash, build-tooling fix only, not a gameplay/feature change
+     // Paper end - spark
+ }
+ 
+@@ -91,11 +91,11 @@ tasks.jar {
+             "Implementation-Title" to "Purpur", // Purpur
+             "Implementation-Version" to implementationVersion,
+             "Implementation-Vendor" to date, // Paper
+-            "Specification-Title" to "Purpur", // Purpur
++            "Specification-Title" to "AtlasSpigot", // Purpur // AtlasSpigot - Rebrand
+             "Specification-Version" to project.version,
+             "Specification-Vendor" to "Purpur Team", // Purpur
+             "Brand-Id" to "purpurmc:purpur", // Purpur
+-            "Brand-Name" to "Purpur", // Purpur
++            "Brand-Name" to "AtlasSpigot", // Purpur // AtlasSpigot - Rebrand
+             "Build-Number" to (build ?: ""),
+             "Build-Time" to Instant.now().toString(),
+             "Git-Branch" to gitBranch, // Paper
+
+--- a/Purpur-Server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
++++ b/Purpur-Server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+@@ -31,7 +31,7 @@ public record ServerBuildInfoImpl(
+     private static final String ATTRIBUTE_GIT_COMMIT = "Git-Commit";
+ 
+     private static final String BRAND_PAPER_NAME = "Paper";
+-    private static final String BRAND_PURPUR_NAME = "Purpur"; // Purpur
++    private static final String BRAND_PURPUR_NAME = "AtlasSpigot"; // Purpur // AtlasSpigot - fallback default, superseded in practice by the Brand-Name manifest attribute
+ 
+     private static final String BUILD_DEV = "DEV";
+ 

@@ -3,7 +3,7 @@
 ## AtlasSpigot
 
 [![License](https://img.shields.io/badge/license-mixed%20(MIT%2FGPL--3.0)-blue?logo=github)](LICENSE.md)
-[![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.8%20%7C%201.21.7%20%7C%201.21.6%20%7C%201.21.5%20%7C%201.21.4%20%7C%201.21.3%20%7C%201.21.1-blueviolet)](https://github.com/PurpurMC/Purpur)
+[![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.8%20%7C%201.21.7%20%7C%201.21.6%20%7C%201.21.5%20%7C%201.21.4%20%7C%201.21.3%20%7C%201.21.1%20%7C%201.21-blueviolet)](https://github.com/PurpurMC/Purpur)
 [![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
 A tuned, rebranded Minecraft server spanning [Paper](https://github.com/PaperMC/Paper),
@@ -58,6 +58,7 @@ actually shipped vs still planned; here's what's released right now:
 | 1.21.4 | Leaf | `atlasspigot-1.21.4-N` | [`1.21.4/`](1.21.4/) ([notes](1.21.4/NOTES.md)) |
 | 1.21.3 | Purpur | `atlasspigot-1.21.3-N` | [`1.21.3/`](1.21.3/) ([notes](1.21.3/NOTES.md)) |
 | 1.21.1 | Purpur | `atlasspigot-1.21.1-N` | [`1.21.1/`](1.21.1/) ([notes](1.21.1/NOTES.md)) |
+| 1.21 | Purpur | `atlasspigot-1.21-N` | [`1.21/`](1.21/) ([notes](1.21/NOTES.md)) |
 
 A new release ships for every change on whichever track it applies to, so the top of each tag
 prefix's history is always that track's current build. Same tuning philosophy on every track - a
