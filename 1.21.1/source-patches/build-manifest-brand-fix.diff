@@ -1,0 +1,37 @@
+--- a/Purpur-Server/build.gradle.kts
++++ b/Purpur-Server/build.gradle.kts
+@@ -75,7 +75,7 @@ dependencies {
+     // Paper end - Remap reflection
+     // Paper start - spark
+     implementation("me.lucko:spark-api:0.1-20240720.200737-2")
+-    implementation("me.lucko:spark-paper:1.10.105-SNAPSHOT")
++    implementation("me.lucko:spark-paper:1.10.119-SNAPSHOT") // AtlasSpigot - 1.10.105-SNAPSHOT was purged from the Maven repo (normal snapshot lifecycle); bumped to the nearest still-available snapshot, build-tooling fix only, not a gameplay/feature change
+     // Paper end - spark
+ }
+ 
+@@ -107,11 +107,11 @@ tasks.jar {
+             "Implementation-Title" to "Purpur", // Pufferfish // Purpur
+             "Implementation-Version" to implementationVersion,
+             "Implementation-Vendor" to date, // Paper
+-            "Specification-Title" to "Purpur", // Pufferfish // Purpur
++            "Specification-Title" to "AtlasSpigot", // Pufferfish // Purpur // AtlasSpigot - Rebrand
+             "Specification-Version" to project.version,
+             "Specification-Vendor" to "Purpur Team", // Pufferfish // Purpur
+             "Brand-Id" to "purpurmc:purpur", // Pufferfish // Purpur
+-            "Brand-Name" to "Purpur", // Pufferfish // Purpur
++            "Brand-Name" to "AtlasSpigot", // Pufferfish // Purpur // AtlasSpigot - Rebrand
+             "Build-Number" to (build ?: ""),
+             "Build-Time" to Instant.now().toString(),
+             "Git-Branch" to gitBranch, // Paper
+
+--- a/Purpur-Server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
++++ b/Purpur-Server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+@@ -32,7 +32,7 @@ public record ServerBuildInfoImpl(
+ 
+     private static final String BRAND_PAPER_NAME = "Paper";
+     private static final String BRAND_PUFFERFISH_NAME = "Pufferfish"; // Purpur
+-    private static final String BRAND_PURPUR_NAME = "Purpur"; // Purpur
++    private static final String BRAND_PURPUR_NAME = "AtlasSpigot"; // Purpur // AtlasSpigot - fallback default, superseded in practice by the Brand-Name manifest attribute
+ 
+     private static final String BUILD_DEV = "DEV";
+ 

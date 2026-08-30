@@ -1,0 +1,11 @@
+--- a/Purpur-Server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/Purpur-Server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -660,7 +660,7 @@ public final class CraftServer implements Server {
+ 
+     @Override
+     public String getName() {
+-        return this.serverName;
++        return org.purpurmc.purpur.PurpurConfig.serverModName; // AtlasSpigot - keep consistent with the configurable brand used for getServerModName() instead of the raw build-info name
+     }
+ 
+     @Override
