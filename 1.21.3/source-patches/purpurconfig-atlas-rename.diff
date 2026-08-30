@@ -1,0 +1,11 @@
+--- a/Purpur-Server/src/main/java/org/purpurmc/purpur/PurpurConfig.java
++++ b/Purpur-Server/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+@@ -68,7 +68,7 @@ public class PurpurConfig {
+             config.load(CONFIG_FILE);
+         } catch (IOException ignore) {
+         } catch (InvalidConfigurationException ex) {
+-            Bukkit.getLogger().log(Level.SEVERE, "Could not load purpur.yml, please correct your syntax errors", ex);
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load atlas.yml, please correct your syntax errors", ex); // AtlasSpigot - renamed from purpur.yml
+             throw Throwables.propagate(ex);
+         }
+         config.options().header(HEADER);
