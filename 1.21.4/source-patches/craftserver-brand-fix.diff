@@ -1,0 +1,8 @@
+--- a/paper-server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/paper-server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -680,7 +680,7 @@
+     @Override
+     public String getName() {
+-        return this.serverName;
++        return org.dreeam.leaf.config.modules.misc.ServerBrand.serverModName; // Leaf - keep consistent with the configurable brand used for getServerModName()/BrandPayload instead of the raw build-info name
+     }
