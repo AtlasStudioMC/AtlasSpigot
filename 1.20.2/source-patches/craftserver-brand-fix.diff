@@ -1,0 +1,20 @@
+--- a/Purpur-Server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/Purpur-Server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -269,7 +269,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Purpur"; // Paper // Pufferfish // Purpur
++    private final String serverName = "AtlasSpigot"; // Paper // Pufferfish // Purpur // AtlasSpigot - Rebrand
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
+@@ -665,7 +665,7 @@ public final class CraftServer implements Server {
+ 
+     @Override
+     public String getName() {
+-        return this.serverName;
++        return org.purpurmc.purpur.PurpurConfig.serverModName; // AtlasSpigot - keep consistent with the configurable brand used for getServerModName() instead of the raw build-info name
+     }
+ 
+     @Override
