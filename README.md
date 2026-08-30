@@ -59,6 +59,7 @@ actually shipped vs still planned; here's what's released right now:
 | 1.21.3 | Purpur | `atlasspigot-1.21.3-N` | [`1.21.3/`](1.21.3/) ([notes](1.21.3/NOTES.md)) |
 | 1.21.1 | Purpur | `atlasspigot-1.21.1-N` | [`1.21.1/`](1.21.1/) ([notes](1.21.1/NOTES.md)) |
 | 1.21 | Purpur | `atlasspigot-1.21-N` | [`1.21/`](1.21/) ([notes](1.21/NOTES.md)) |
+| 1.20.6 | Purpur | `atlasspigot-1.20.6-N` | [`1.20.6/`](1.20.6/) ([notes](1.20.6/NOTES.md)) |
 
 A new release ships for every change on whichever track it applies to, so the top of each tag
 prefix's history is always that track's current build. Same tuning philosophy on every track - a
