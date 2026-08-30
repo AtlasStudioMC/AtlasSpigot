@@ -3,19 +3,22 @@
 ## AtlasSpigot
 
 [![License](https://img.shields.io/badge/license-mixed%20(MIT%2FGPL--3.0)-blue?logo=github)](LICENSE.md)
-[![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%201.21.11-blueviolet)](https://github.com/Winds-Studio/Leaf)
+[![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11-blueviolet)](https://github.com/Winds-Studio/Leaf)
 [![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
-A tuned, rebranded build of [Leaf](https://github.com/Winds-Studio/Leaf) — a performance-focused
-[Paper](https://papermc.io/) fork — for Minecraft 26.2 and 1.21.11.
+A tuned, rebranded Minecraft server spanning [Paper](https://github.com/PaperMC/Paper),
+[Purpur](https://github.com/PurpurMC/Purpur), and [Leaf](https://github.com/Winds-Studio/Leaf) -
+one build philosophy across every supported Minecraft version.
 
 </div>
 
-AtlasSpigot isn't a fork from scratch: it's Leaf, source-rebuilt with a real brand change baked into
-the jar itself (not just a config overlay) and a set of scale/resource tuning changes layered on
-top, each checked against Leaf's own source and issue tracker before being enabled. Every change
-here is documented with *why*, not just *what* — see [What's tuned here](#whats-tuned-here) and
-[`source-patches/`](source-patches/) for the actual diffs.
+AtlasSpigot isn't a fork from scratch: each version is Paper, Purpur, or Leaf (whichever one
+actually has buildable source for that Minecraft version - see [`ROADMAP.md`](ROADMAP.md)),
+source-rebuilt with a real brand change baked into the jar itself (not just a config overlay) and a
+set of scale/resource tuning changes layered on top, each checked against that version's own
+upstream source and issue tracker before being enabled. Every change here is documented with *why*,
+not just *what* — see [What's tuned here](#whats-tuned-here) and each version's own
+`source-patches/` folder for the actual diffs.
 
 This is a self-hosted build with no CI pipeline, Discord, or sponsors of its own — those usual
 badge-row staples are left out rather than faked. What's above is real: a static license badge
@@ -24,6 +27,7 @@ backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics)
 ### Contents
 
 - [Downloads](#downloads)
+- [Roadmap](ROADMAP.md)
 - [Quick start](#quick-start)
 - [What's tuned here](#whats-tuned-here) — [branding](#branding), [performance](#performance),
   [what's deliberately not enabled](#deliberately-not-enabled),
@@ -37,17 +41,25 @@ backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics)
 
 ## Downloads
 
-Two version tracks, each with its own tag prefix on the [**Releases**](../../releases) page:
+Every Minecraft version is its own track, with its own tag prefix on the
+[**Releases**](../../releases) page and its own folder for config + source-patches. The website's
+[downloads page](https://github.com/AtlasStudioMC/Atlas-Website) shows the full lineup and what's
+actually shipped vs still planned; here's what's released right now:
 
-- **26.2** — `atlasspigot-26.2-N` tags, jar + config live at the repo root.
-- **1.21.11** — `atlasspigot-1.21.11-N` tags, jar + config live under [`1.21.11/`](1.21.11/).
+| Minecraft | Built on | Tag prefix | Config/patches |
+|---|---|---|---|
+| 26.2 | Leaf | `atlasspigot-26.2-N` | repo root |
+| 26.1.2 | Leaf | `atlasspigot-26.1.2-N` | [`26.1.2/`](26.1.2/) |
+| 1.21.11 | Leaf | `atlasspigot-1.21.11-N` | [`1.21.11/`](1.21.11/) |
 
 A new release ships for every change on whichever track it applies to, so the top of each tag
-prefix's history is always that track's current build. Same tuning philosophy on both — see
-[`1.21.11/source-patches/`](1.21.11/source-patches/) for that track's diffs; a couple of settings
-differ only because this older Leaf branch's own stock defaults differ (documented inline in
-[`1.21.11/spigot.yml`](1.21.11/spigot.yml)'s entity-tracking-range, which halves *this*
-version's stock numbers rather than reusing 26.2's).
+prefix's history is always that track's current build. Same tuning philosophy on every track - a
+couple of settings differ per-track only because that version's own stock defaults differ (e.g.
+each `spigot.yml`'s entity-tracking-range is halved from *that specific version's* own stock
+numbers, documented inline, not copy-pasted from another track).
+
+The full roadmap - which older versions will build on Purpur, and which oldest ones fall back to
+Paper/Spigot directly, and why - is in [`ROADMAP.md`](ROADMAP.md).
 
 ## Quick start
 
