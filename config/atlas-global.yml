@@ -120,9 +120,9 @@ performance:
   # May conflict with certain plugins or operations. Disable if position issues occur.
   reuse-random-ticking-blockpos: false
   cache-biome:
-    enabled: false
-    mob-spawning: false
-    advancements: false
+    enabled: true
+    mob-spawning: true
+    advancements: true
   optimize-block-entities: true
   optimize-mob-despawn: false
   optimize-end-surface-gen:
@@ -181,13 +181,13 @@ performance:
   create-snapshot-on-retrieving-blockstate: true
   use-virtual-thread:
     # Use the new Virtual Thread introduced in JDK 21 for CraftAsyncScheduler.
-    bukkit-async-scheduler: false
+    bukkit-async-scheduler: true
     # Use the new Virtual Thread introduced in JDK 21 for FoliaAsyncScheduler.
     folia-async-scheduler: false
     # Use the new Virtual Thread introduced in JDK 21 for Async Chat Executor.
     async-chat-executor: true
     # Use the new Virtual Thread introduced in JDK 21 for profile fetching executor.
-    download-pool: false
+    download-pool: true
 
 ###########
 #  FIXES  #
