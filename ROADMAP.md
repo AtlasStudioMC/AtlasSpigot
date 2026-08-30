@@ -30,7 +30,7 @@ list, not built yet - never claimed as available before it actually ships.
 | 1.21.4 | Leaf | released |
 | 1.21.3 | Purpur | released |
 | 1.21.1 | Purpur | released |
-| 1.21 | Purpur | planned |
+| 1.21 | Purpur | released |
 | 1.20.6 | Purpur | planned |
 | 1.20.4 | Purpur | planned |
 | 1.20.2 | Purpur | planned |
