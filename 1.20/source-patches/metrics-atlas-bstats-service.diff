@@ -1,0 +1,84 @@
+--- a/Purpur-Server/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/Purpur-Server/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -41,7 +41,12 @@ public class Metrics {
+     public static final int B_STATS_VERSION = 1;
+ 
+     // The url to which the data is sent
+-    private static final String URL = "https://bStats.org/submitData/server-implementation";
++    // AtlasSpigot - the server-implementation category is a curated bStats list we're not on;
++    // report as a registered bStats service instead, same wire schema self-serve plugins use
++    private static final String URL = "https://bStats.org/api/v2/data/bukkit";
++
++    // AtlasSpigot - our registered bStats service id (bstats.org/plugin/bukkit/AtlasSpigot/33733)
++    private static final int SERVICE_ID = 33733;
+ 
+     // Should failed requests be logged?
+     private static boolean logFailedRequests = false;
+@@ -110,14 +115,18 @@ public class Metrics {
+     }
+ 
+     /**
+-     * Gets the plugin specific data.
++     * Gets the data for our registered bStats service (id SERVICE_ID).
++     *
++     * AtlasSpigot - rebuilt to match the v2 API's per-service shape ({"service": {"id",
++     * "customCharts"}}) instead of the old server-implementation "plugins" array, since that's
++     * the schema this service id actually reports under.
+      *
+-     * @return The plugin specific data.
++     * @return The service specific data.
+      */
+-    private JSONObject getPluginData() {
++    private JSONObject getServiceData() {
+         JSONObject data = new JSONObject();
+ 
+-        data.put("pluginName", name); // Append the name of the server software
++        data.put("id", SERVICE_ID);
+         JSONArray customCharts = new JSONArray();
+         for (CustomChart customChart : charts) {
+             // Add the data of the custom charts
+@@ -147,6 +156,14 @@ public class Metrics {
+         JSONObject data = new JSONObject();
+ 
+         data.put("serverUUID", serverUUID);
++        data.put("metricsVersion", "3.2.1"); // AtlasSpigot - matches the v2 API's expected field
++
++        // AtlasSpigot - base platform fields the v2 "bukkit" schema expects
++        data.put("playerAmount", Bukkit.getOnlinePlayers().size());
++        data.put("onlineMode", Bukkit.getOnlineMode() ? 1 : 0);
++        data.put("bukkitVersion", Bukkit.getVersion());
++        data.put("bukkitName", Bukkit.getName());
++        data.put("javaVersion", System.getProperty("java.version"));
+ 
+         data.put("osName", osName);
+         data.put("osArch", osArch);
+@@ -161,10 +178,7 @@ public class Metrics {
+      */
+     private void submitData() {
+         final JSONObject data = getServerData();
+-
+-        JSONArray pluginData = new JSONArray();
+-        pluginData.add(getPluginData());
+-        data.put("plugins", pluginData);
++        data.put("service", getServiceData()); // AtlasSpigot - nest our service's charts, v2 schema
+ 
+         try {
+             // We are still in the Thread of the timer, so nothing get blocked :)
+@@ -593,7 +607,7 @@ public class Metrics {
+             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
+             // Only start Metrics, if it's enabled in the config
+             if (config.getBoolean("enabled", true)) {
+-                Metrics metrics = new Metrics("Purpur", serverUUID, logFailedRequests, Bukkit.getLogger()); // Pufferfish // Purpur
++                Metrics metrics = new Metrics("AtlasSpigot", serverUUID, logFailedRequests, Bukkit.getLogger()); // Pufferfish // Purpur // AtlasSpigot - report to our own bStats project instead of Purpur's
+ 
+                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+                     String minecraftVersion = Bukkit.getVersion();
+@@ -603,7 +617,7 @@ public class Metrics {
+ 
+                 metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
+                 metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : (io.papermc.paper.configuration.GlobalConfiguration.get().proxies.isProxyOnlineMode() ? "bungee" : "offline"))); // Purpur
+-                metrics.addCustomChart(new Metrics.SimplePie("purpur_version", () -> (org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() != null) ? org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() : "unknown")); // Purpur
++                metrics.addCustomChart(new Metrics.SimplePie("atlasspigot_version", () -> (org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() != null) ? org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion() : "unknown")); // Purpur // AtlasSpigot - own chart key, not piggybacking on Purpur's
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>();

@@ -1,0 +1,20 @@
+--- a/Purpur-Server/src/main/java/org/purpurmc/purpur/PurpurConfig.java
++++ b/Purpur-Server/src/main/java/org/purpurmc/purpur/PurpurConfig.java
+@@ -65,7 +65,7 @@ public class PurpurConfig {
+             config.load(CONFIG_FILE);
+         } catch (IOException ignore) {
+         } catch (InvalidConfigurationException ex) {
+-            Bukkit.getLogger().log(Level.SEVERE, "Could not load purpur.yml, please correct your syntax errors", ex);
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load atlas.yml, please correct your syntax errors", ex); // AtlasSpigot - renamed from purpur.yml
+             throw Throwables.propagate(ex);
+         }
+         config.options().header(HEADER);
+@@ -229,7 +229,7 @@ public class PurpurConfig {
+         deathMessageOnlyBroadcastToAffectedPlayer = getBoolean("settings.broadcasts.death.only-broadcast-to-affected-player", deathMessageOnlyBroadcastToAffectedPlayer);
+     }
+ 
+-    public static String serverModName = "Purpur";
++    public static String serverModName = "AtlasSpigot"; // AtlasSpigot - Rebrand
+     private static void serverModName() {
+         serverModName = getString("settings.server-mod-name", serverModName);
+     }

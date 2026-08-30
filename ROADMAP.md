@@ -29,7 +29,7 @@ list, not built yet - never claimed as available before it actually ships.
 | 1.20.4 | Purpur | released |
 | 1.20.2 | Purpur | released |
 | 1.20.1 | Purpur | released |
-| 1.20 | Purpur | planned |
+| 1.20 | Purpur | released |
 
 This table and the website's version grid ([`src/data/versions.ts`](https://github.com/AtlasStudioMC/Atlas-Website/blob/main/src/data/versions.ts)
 in the Atlas-Website repo) are kept in sync by hand as each version ships.
