@@ -200,7 +200,7 @@ fixes:
     mc-270656: false
     # Whether to fix the memory leak in the combat tracker caused by the mob constantly being damaged.
     # Mojira link: https://mojira.dev/MC-301114
-    mc-301114: false
+    mc-301114: true
     # Max allowed entries in mob's combat tracker.
     mc-301114-max-entries: 10240
     # Whether to fix the bug End City ship generation gets cut at chunk borders.
