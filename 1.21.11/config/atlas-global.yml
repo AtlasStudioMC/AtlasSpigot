@@ -125,9 +125,9 @@ performance:
   # May conflict with certain plugins or operations. Disable if position issues occur.
   reuse-random-ticking-blockpos: false
   cache-biome:
-    enabled: false
-    mob-spawning: false
-    advancements: false
+    enabled: true
+    mob-spawning: true
+    advancements: true
   optimize-block-entities: true
   optimize-mob-despawn: false
   # Whether to only tick / update items in main hand and offhand instead of the entire inventory.
@@ -182,13 +182,13 @@ performance:
   create-snapshot-on-retrieving-blockstate: true
   use-virtual-thread:
     # Use the new Virtual Thread introduced in JDK 21 for CraftAsyncScheduler.
-    bukkit-async-scheduler: false
+    bukkit-async-scheduler: true
     # Use the new Virtual Thread introduced in JDK 21 for FoliaAsyncScheduler.
     folia-async-scheduler: false
     # Use the new Virtual Thread introduced in JDK 21 for Async Chat Executor.
     async-chat-executor: true
     # Use the new Virtual Thread introduced in JDK 21 for profile fetching executor.
-    download-pool: false
+    download-pool: true
     # Use the new Virtual Thread introduced in JDK 21 for user authentication.
     auth-pool: true
     # Use the new Virtual Thread introduced in JDK 21 for Paper task pool in configuration phase.
@@ -205,7 +205,7 @@ fixes:
     mc-270656: false
     # Whether to fix the memory leak in the combat tracker caused by the mob constantly being damaged.
     # Mojira link: https://mojira.dev/MC-301114
-    mc-301114: false
+    mc-301114: true
     # Max allowed entries in mob's combat tracker.
     mc-301114-max-entries: 10240
     # Whether to fix the bug End City ship generation gets cut at chunk borders.

@@ -50,7 +50,7 @@ actually shipped vs still planned; here's what's released right now:
 |---|---|---|---|
 | 26.2 | Leaf | `atlasspigot-26.2-N` | repo root |
 | 26.1.2 | Leaf | `atlasspigot-26.1.2-N` | [`26.1.2/`](26.1.2/) |
-| 1.21.11 | Leaf | `atlasspigot-1.21.11-N` | [`1.21.11/`](1.21.11/) |
+| 1.21.11 | Leaf | `atlasspigot-1.21.11-N` | [`1.21.11/`](1.21.11/) ([notes](1.21.11/NOTES.md)) |
 | 1.21.8 | Leaf | `atlasspigot-1.21.8-N` | [`1.21.8/`](1.21.8/) ([notes](1.21.8/NOTES.md)) |
 | 1.21.7 | Leaf | `atlasspigot-1.21.7-N` | [`1.21.7/`](1.21.7/) ([notes](1.21.7/NOTES.md)) |
 | 1.21.6 | Leaf | `atlasspigot-1.21.6-N` | [`1.21.6/`](1.21.6/) ([notes](1.21.6/NOTES.md)) |

@@ -1,6 +1,18 @@
+--- a/paper-server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
++++ b/paper-server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
+@@ -35,7 +35,7 @@ public record ServerBuildInfoImpl(
+     // Leaf start - Rebrand
+     private static final String BRAND_PUFFERFISH_NAME = "Pufferfish";
+     private static final String BRAND_PURPUR_NAME = "Purpur";
+-    private static final String BRAND_LEAF_NAME = "Leaf";
++    private static final String BRAND_LEAF_NAME = "AtlasSpigot"; // AtlasSpigot - fallback default, superseded in practice by the Brand-Name manifest attribute
+     // Leaf end - Rebrand
+ 
+     private static final String BUILD_DEV = "DEV";
+
 --- a/leaf-server/build.gradle.kts
 +++ b/leaf-server/build.gradle.kts
-@@ -270,10 +270,10 @@
+@@ -271,9 +271,9 @@
 -            "Specification-Title" to "Leaf", // Leaf - Rebrand
 +            "Specification-Title" to "AtlasSpigot", // Leaf - Rebrand // AtlasSpigot - Rebrand
              "Specification-Version" to project.version,
@@ -8,9 +20,3 @@
              "Brand-Id" to "winds-studio:leaf", // Leaf - Rebrand
 -            "Brand-Name" to "Leaf", // Leaf - Rebrand
 +            "Brand-Name" to "AtlasSpigot", // Leaf - Rebrand // AtlasSpigot - Rebrand
-
---- a/paper-server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-+++ b/paper-server/src/main/java/io/papermc/paper/ServerBuildInfoImpl.java
-@@ -38,1 +38,1 @@
--    private static final String BRAND_LEAF_NAME = "Leaf";
-+    private static final String BRAND_LEAF_NAME = "AtlasSpigot"; // AtlasSpigot - fallback default, superseded in practice by the Brand-Name manifest attribute

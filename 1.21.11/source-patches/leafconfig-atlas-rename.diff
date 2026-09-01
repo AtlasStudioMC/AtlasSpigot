@@ -1,18 +1,18 @@
-Note: this version of Leaf names these constants differently than the 26.2 branch
-(I_GLOBAL_CONFIG_FILE/I_LEVEL_CONFIG_FILE/I_CONFIG_FOLDER here, vs GLOBAL_CONFIG_FILE/
-DEFAULT_WORLD_CONFIG_FILE/CONFIG_DIRECTORY on 26.2) - same rename, different names to match
-what's actually in this branch's source.
-
---- a/leaf-server/src/main/java/org/dreeam/leaf/config/LeafConfig.java
-+++ b/leaf-server/src/main/java/org/dreeam/leaf/config/LeafConfig.java
-@@ -47,8 +47,8 @@
+--- leaf-server/src/main/java/org/dreeam/leaf/config/LeafConfig.java
++++ leaf-server/src/main/java/org/dreeam/leaf/config/LeafConfig.java
+@@ -46,8 +46,8 @@ public class LeafConfig {
+     public static final Logger LOGGER = LogManager.getLogger(LeafConfig.class.getSimpleName());
      protected static final File I_CONFIG_FOLDER = new File("config");
      protected static final String I_CONFIG_PKG = "org.dreeam.leaf.config.modules";
 -    protected static final String I_GLOBAL_CONFIG_FILE = "leaf-global.yml";
 -    protected static final String I_LEVEL_CONFIG_FILE = "leaf-world-defaults.yml"; // Leaf TODO - Per level config
 +    protected static final String I_GLOBAL_CONFIG_FILE = "atlas-global.yml"; // AtlasSpigot - renamed from leaf-global.yml
 +    protected static final String I_LEVEL_CONFIG_FILE = "atlas-world-defaults.yml"; // Leaf TODO - Per level config // AtlasSpigot - renamed from leaf-world-defaults.yml
-@@ -222,7 +222,7 @@
+ 
+     private static final String SPARK_EXTRA_CONFIG_PROPERTY =  "spark.serverconfigs.extra";
+     private static final String SPARK_HIDDEN_PATHS_PROPERTY =  "spark.serverconfigs.hiddenpaths";
+@@ -221,7 +221,7 @@ public class LeafConfig {
+ 
      private static List<String> buildSparkExtraConfigs() {
          List<String> extraConfigs = new ArrayList<>(Arrays.asList(
 -            "config/leaf-global.yml",

@@ -1,9 +1,11 @@
 --- a/paper-server/src/main/java/org/bukkit/craftbukkit/Main.java
 +++ b/paper-server/src/main/java/org/bukkit/craftbukkit/Main.java
-@@ -143,7 +143,7 @@
+@@ -143,7 +143,7 @@ public class Main {
                  this.acceptsAll(asList("purpur", "purpur-settings"), "File for purpur settings")
                      .withRequiredArg()
                      .ofType(File.class)
 -                    .defaultsTo(new File("purpur.yml"))
 +                    .defaultsTo(new File("atlas.yml")) // AtlasSpigot - renamed from purpur.yml
                      .describedAs("Yml file");
+                 // Purpur end - Purpur config files
+ 

@@ -1,8 +1,11 @@
 --- a/paper-server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
 +++ b/paper-server/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -664,7 +664,7 @@
+@@ -663,7 +663,7 @@ public final class CraftServer implements Server {
+ 
      @Override
      public String getName() {
 -        return this.serverName;
-+        return org.dreeam.leaf.config.modules.misc.ServerBrand.serverModName; // Leaf - keep consistent with the configurable brand used for getServerModName()/BrandPayload instead of the raw build-info name
++        return org.dreeam.leaf.config.modules.misc.ServerBrand.serverModName; // AtlasSpigot - keep consistent with the configurable brand used for getServerModName()/BrandPayload instead of the raw build-info name
      }
+ 
+     @Override
