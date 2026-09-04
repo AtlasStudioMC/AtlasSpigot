@@ -6,9 +6,14 @@
 [![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.8%20%7C%201.21.7%20%7C%201.21.6%20%7C%201.21.5%20%7C%201.21.4%20%7C%201.21.3%20%7C%201.21.1%20%7C%201.21%20%7C%201.20.6%20%7C%201.20.4%20%7C%201.20.2%20%7C%201.20.1%20%7C%201.20-blueviolet)](https://github.com/PurpurMC/Purpur)
 [![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
-A tuned, rebranded Minecraft server spanning [Paper](https://github.com/PaperMC/Paper),
-[Purpur](https://github.com/PurpurMC/Purpur), and [Leaf](https://github.com/Winds-Studio/Leaf) -
-one build philosophy across every supported Minecraft version.
+**[atlasstudiomc.vercel.app](https://atlasstudiomc.vercel.app)** &nbsp;·&nbsp;
+[Downloads](https://atlasstudiomc.vercel.app/downloads) &nbsp;·&nbsp;
+[Benchmarks](https://atlasstudiomc.vercel.app/benchmarks) &nbsp;·&nbsp;
+[Docs](https://atlasstudiomc.vercel.app/docs)
+
+A free, tuned Minecraft server jar built on [Purpur](https://github.com/PurpurMC/Purpur) and
+[Leaf](https://github.com/Winds-Studio/Leaf) - one build philosophy across every supported
+Minecraft version.
 
 </div>
 
@@ -43,7 +48,7 @@ backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics)
 
 Every Minecraft version is its own track, with its own tag prefix on the
 [**Releases**](../../releases) page and its own folder for config + source-patches. The website's
-[downloads page](https://github.com/AtlasStudioMC/Atlas-Website) shows the full lineup and what's
+[downloads page](https://atlasstudiomc.vercel.app/downloads) shows the full lineup and what's
 actually shipped vs still planned; here's what's released right now:
 
 | Minecraft | Built on | Tag prefix | Config/patches |
