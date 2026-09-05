@@ -111,6 +111,27 @@ substantial. All boot-tested; the server accepted every value.
 Paper re-sorts the `alt-item-despawn-rate` item list alphabetically on write. The shipped config
 uses its ordering so it doesn't diff on every boot.
 
+### Third pass: maximum
+
+The last of it, on request. This pass crosses one line the earlier ones held: **plugin
+compatibility**.
+
+| Setting | From | To | What you give up |
+|---|---|---|---|
+| `paper` `hopper.disable-move-event` | false | **true** | **`InventoryMoveItemEvent` no longer fires.** Plugins that watch hopper transfers — shop, sorting and some economy plugins — lose their hook. The largest single win in the whole config, and the only change here that can break a working plugin rather than change gameplay. |
+| `hopper.ignore-occluding-blocks` | false | true | Hoppers skip occlusion checks when picking up items. |
+| `atlas-global` `sleeping-block-entity` | false | true | Lithium's optimisation: block entities with nothing to do stop ticking until poked. Module is clean of annotations. |
+| `throttle-mob-spawning.enabled` | false | true | Chunks that fail to spawn mobs 8 times get a 25% spawn chance thereafter. Fewer wasted spawn attempts in lit or unsuitable areas. |
+| `bukkit.yml` `spawn-limits.monsters` | 70 | 40 | Per-player mob caps cut hard. Every spawned mob costs ticks for as long as it lives, so this is one of the largest wins available — and caves feel emptier, farm rates drop. |
+| `spawn-limits.animals` | 10 | 6 | Fewer passive mobs. |
+| `spawn-limits.ambient` | 15 | 4 | Bats become rare. |
+| `spawn-limits.water-ambient` | 20 | 8 | Fewer fish. |
+| `ticks-per.*-spawns` | 1 | 2 | Spawn attempts run half as often. |
+
+`bukkit.yml` is newly shipped — the repo previously had none, so those limits were running at
+stock. Note Bukkit rewrites the file with its own header on first boot and strips any comments
+added to it, so the shipped copy carries none; the reasoning lives here instead.
+
 ### Still deliberately off
 
 - **`hopper.disable-move-event`** — the single biggest remaining win, and the only one held back
@@ -119,10 +140,6 @@ uses its ordering so it doesn't diff on every boot.
   firing `InventoryMoveItemEvent`, which shop, economy and sorting plugins subscribe to. Enabling
   it would break working plugins, and "every plugin keeps working" is the one promise this project
   makes that a config knob shouldn't quietly cancel.
-- **`nerf-spawner-mobs`** — spawner mobs would lose their AI entirely. Big win, but it breaks the
-  common mob-grinder designs players actually build.
-- **`armor-stands.tick: false`** — stops armor stands ticking. Plugin-spawned stands that rely on
-  movement or gravity would stop working.
 - **`increase-time-statistics`** — makes `CROUCH_TIME`, `TIME_SINCE_DEATH` and `TIME_SINCE_REST`
   sampled approximations; `TIME_SINCE_REST` drives phantom spawning.
 

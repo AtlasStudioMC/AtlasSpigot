@@ -151,12 +151,12 @@ performance:
     # Will improve performance on servers with massive datapack functions.
     skip-inactive-entity-for-execute-command: false
   skip-map-item-data-updates-if-map-does-not-have-craftmaprenderer: true
-  sleeping-block-entity: false
+  sleeping-block-entity: true
   # Skip mob spawning for chunks with repeated failures at least `min-failed`.
   # Valid range for `spawn-chance` is 0.0 to 100.0.
   # Failure counter does not increment when reach spawn limits.
   throttle-mob-spawning:
-    enabled: false
+    enabled: true
     monster:
       min-failed: 8
       spawn-chance: 25.0
