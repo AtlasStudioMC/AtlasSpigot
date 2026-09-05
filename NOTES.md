@@ -265,6 +265,34 @@ file, so profilers need to attach by PID.
 > remainder — including `-jar ... nogui` — and the server silently starts with no jar. The comment
 > sits above the `java` line for that reason.
 
+## Benchmarked, and the result was inconclusive
+
+26.2 has now been tested rather than left unmeasured, and the honest answer is that this hardware
+cannot resolve the difference. Eight runs, alternating AtlasSpigot and stock Paper 26.2 build 121
+so drift would hit both sides equally:
+
+| | mean MSPT | sd | range |
+|---|---|---|---|
+| Paper 26.2 (defaults) | 13.15 | 3.74 | 8.89 – 17.95 |
+| AtlasSpigot b21 (tuned) | 10.94 | 3.61 | 5.03 – 14.50 |
+
+That is +2.21 MSPT, about 17% in AtlasSpigot's favour, with an effect-to-noise ratio of **0.60**.
+A result needs that ratio clearly above 1 to mean anything. The ranges overlap heavily and one of
+four matched pairs favours Paper outright.
+
+The dominant signal is thermal throttling, not software: across the session Paper degraded 76% and
+AtlasSpigot 122% purely as a function of run order. An earlier batch of three runs produced the
+opposite ordering. Which side "wins" depends on which runs you look at, which is the clearest
+possible sign the measurement is not resolving anything.
+
+**So no performance figure is claimed for 26.2**, and the website now says so on its benchmarks
+page rather than quietly implying the 1.21.4 number applies. Full raw output and analysis:
+[`benchmarks/results-26.2.txt`](benchmarks/results-26.2.txt).
+
+Doing this properly needs a machine with a stable clock — a desktop or bare metal, not a laptop.
+Until then the seven source patches and four config tiers remain justified on the grounds they were
+always justified on: provably fewer allocations, and documented tradeoffs.
+
 ## Not benchmarked
 
 The published benchmark numbers are from 1.21.4. No measurements have been taken on 26.2, so no
