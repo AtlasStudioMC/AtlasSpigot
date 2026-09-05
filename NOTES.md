@@ -40,27 +40,63 @@ arguments. It isn't: the signature is `fluidDelay(level, pos, rawDelay, enabledF
 oppositeTag)`, so the tag is deliberately the *other* fluid — used to skip compensation where water
 and lava meet. Recorded here so the next person doesn't re-raise it.
 
-## The config is at its safe ceiling
+## Beyond the safe ceiling: the aggressive tier
 
-Every remaining Leaf toggle on this track is one of: `@Experimental`, carrying an explicit upstream
-incompatibility warning, blocked on an open upstream issue, or a deliberate gameplay change. There
-is no more free performance in `atlas-global.yml`.
+`atlas-global.yml` is exhausted — every remaining Leaf toggle is `@Experimental`, carries an
+upstream incompatibility warning, or is blocked on an open issue. Going further meant accepting
+gameplay tradeoffs, which was an explicit decision, not a default. **These change how the game
+behaves.** Every one was boot-tested and none were silently overridden.
 
-Further gains require accepting a gameplay or compatibility tradeoff. These are **deliberately not
-applied**, and are listed so the choice stays with the server owner:
+### spigot.yml
 
-- **`spigot.yml` entity activation ranges** — currently at Spigot defaults. Lowering them is the
-  single biggest classic win, and the single most likely thing to break mob farms and make distant
-  mobs freeze.
-- **`paper-world-defaults.yml` `hopper.disable-move-event`** — large win on hopper-heavy servers,
-  but it stops firing `InventoryMoveItemEvent`, which shop and economy plugins rely on. That
-  directly contradicts "your plugins keep working".
-- **`gale-global.yml` `increase-time-statistics`** — batches statistic increments. `PLAY_TIME` and
-  `TOTAL_WORLD_TIME` stay exact, but `CROUCH_TIME`, `TIME_SINCE_DEATH` and `TIME_SINCE_REST` become
-  sampled approximations, since they're only checked on the interval tick. `TIME_SINCE_REST` drives
-  phantom spawning.
-- **View and simulation distance** — already at 6/4, which is well below vanilla. Lowering further
-  trades visible world for TPS.
+| Setting | From | To | What you give up |
+|---|---|---|---|
+| `entity-activation-range.animals` | 32 | 16 | Animals stop ticking sooner. Breeders and slower farms feel it first. |
+| `.monsters` | 32 | 24 | Distant mobs freeze until a player is closer. |
+| `.raiders` | 64 | 48 | Raid participants tick over a smaller area. |
+| `.misc` / `.water` | 16 | 8 | Items, boats and fish idle sooner. |
+| `.villagers` | 32 | 16 | Distant villagers stop restocking/pathing until approached. |
+| `.flying-monsters` | 32 | 24 | Phantoms/ghasts tick closer in. |
+| `entity-tracking-range.animals` | 32 | 24 | Entities appear slightly later as you approach. |
+| `.monsters` | 32 | 28 | As above. |
+| `.misc` | 32 | 16 | Dropped items render later. |
+| `.other` | 48 | 32 | As above. |
+| `merge-radius.item` | 2.5 | 3.5 | Dropped items merge from further apart. |
+| `mob-spawn-range` | 8 | 6 | Mobs spawn in a tighter ring; fewer far-away spawns. |
+
+`entity-tracking-range.players` (48) and `.display` (64) are **deliberately unchanged**: shrinking
+the player range hurts PvP visibility, and `display` entities are what hologram plugins use.
+
+`wake-up-inactive` was already configured, and it still periodically revives batches of frozen
+mobs, so nothing stays inactive indefinitely.
+
+### paper-world-defaults.yml
+
+| Setting | From | To | What you give up |
+|---|---|---|---|
+| `max-entity-collisions` | 8 | 2 | Mobs overlap more when densely packed. |
+| `update-pathfinding-on-block-update` | true | false | Mobs re-path on their next tick instead of instantly on a block change. Large win in redstone-heavy areas. |
+| `disable-chest-cat-detection` | false | true | Cats sitting on chests no longer block opening them. |
+| `non-player-arrow-despawn-rate` | default | `'60'` | Skeleton arrows vanish after 3s, so they can't be collected. |
+| `treasure-maps.find-already-discovered.villager-trade` | false | true | Cartographer maps point at already-discovered structures instead of triggering a large synchronous worldgen search — a well-known multi-second freeze. |
+| `armor-stands.do-collision-entity-lookups` | true | false | Armor stands stop scanning for colliding entities. |
+| `entity-per-chunk-save-limit.*` | -1 | 8–32 | Projectiles and XP orbs beyond the cap are dropped when a chunk saves, instead of accumulating without bound. |
+
+Paper rewrites `non-player-arrow-despawn-rate: 60` as the quoted `'60'`, since the field is a
+`default | number` union. The shipped config uses the quoted form so it doesn't diff on every boot.
+
+### Still deliberately off
+
+- **`hopper.disable-move-event`** — the single biggest remaining win, and it stays off. It stops
+  firing `InventoryMoveItemEvent`, which shop, economy and sorting plugins subscribe to. Enabling
+  it would break working plugins, and "every plugin keeps working" is the one promise this project
+  makes that a config knob shouldn't quietly cancel.
+- **`nerf-spawner-mobs`** — spawner mobs would lose their AI entirely. Big win, but it breaks the
+  common mob-grinder designs players actually build.
+- **`armor-stands.tick: false`** — stops armor stands ticking. Plugin-spawned stands that rely on
+  movement or gravity would stop working.
+- **`increase-time-statistics`** — makes `CROUCH_TIME`, `TIME_SINCE_DEATH` and `TIME_SINCE_REST`
+  sampled approximations; `TIME_SINCE_REST` drives phantom spawning.
 
 ## JVM flags
 
