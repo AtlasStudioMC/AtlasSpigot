@@ -1,0 +1,18 @@
+Skip the item merge event when nothing is listening.
+
+CraftEventFactory#callItemMergeEvent built two CraftEntity casts, an ItemMergeEvent and a
+plugin-manager dispatch on every item merge. The event can only cancel the merge, so with no
+listener registered the method always returns true - returning it directly is exactly equivalent.
+
+Item merging runs continuously wherever drops pile up: mob farms, mining, mass drops. It is called
+from ItemEntity#mergeWithNeighbours, which itself runs from the item's tick.
+
+--- a/paper-server/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/paper-server/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -843,6 +843,10 @@
+     public static boolean callItemMergeEvent(ItemEntity merging, ItemEntity mergingWith) {
++        // AtlasSpigot - the event can only veto; with no listener the answer is always true
++        if (ItemMergeEvent.getHandlerList().getRegisteredListeners().length == 0) {
++            return true;
++        }
+         org.bukkit.entity.Item entityMerging = (org.bukkit.entity.Item) merging.getBukkitEntity();

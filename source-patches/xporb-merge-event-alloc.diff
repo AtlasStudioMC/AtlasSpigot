@@ -1,0 +1,18 @@
+Skip the XP orb merge event when nothing is listening.
+
+ExperienceOrb#merge fired ExperienceOrbMergeEvent unconditionally, building two CraftEntity casts
+and an event object per merge. The event can only veto the merge, so with no listener registered
+the merge always proceeds - checking that first is exactly equivalent.
+
+Orb merging runs continuously at any grinder, and more so with a configured XP merge radius, which
+this project's tuned spigot.yml now sets.
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/entity/ExperienceOrb.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/entity/ExperienceOrb.java
+@@ -304,7 +304,12 @@
+     private void merge(final ExperienceOrb orb) {
+-        if (!new ExperienceOrbMergeEvent((ExperienceOrb) this.getBukkitEntity(), (ExperienceOrb) orb.getBukkitEntity()).callEvent()) {
++        if (ExperienceOrbMergeEvent.getHandlerList().getRegisteredListeners().length != 0
++            && !new ExperienceOrbMergeEvent((ExperienceOrb) this.getBukkitEntity(), (ExperienceOrb) orb.getBukkitEntity()).callEvent()) {
+             return;
+         }

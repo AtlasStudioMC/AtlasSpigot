@@ -181,12 +181,22 @@ where it is deliberately never fired. With no listener the event can neither can
 rewrite the amount, making `entityData.set(supply)` the only possible outcome. Runs per tick for
 anything drowning or refilling air, so mobs pathing through water hit it continuously.
 
-All three follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
+**`xporb-merge-event-alloc.diff`** — `ExperienceOrb#merge` fired `ExperienceOrbMergeEvent`
+unconditionally: two CraftEntity casts and an event object per merge. The event can only veto the
+merge. Orb merging runs continuously at any grinder, and more so now that this project's tuned
+`spigot.yml` sets an XP merge radius.
+
+**`itemmerge-event-alloc.diff`** — `CraftEventFactory#callItemMergeEvent` built two casts, an
+`ItemMergeEvent` and a plugin-manager dispatch on every item merge, to reach an answer that is
+always `true` with no listener. Called from `ItemEntity#mergeWithNeighbours`, which runs from the
+item's tick, so it fires wherever drops pile up.
+
+All five follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
 work that nothing will read.** None changes behaviour when a listener is registered. Paper already
 does this in places — `EntityCollideWithEntityEvent` in `Entity#push(Entity)` is guarded exactly
 this way — these are the spots it hadn't reached.
 
-None of the three is measured. They are strictly-fewer-allocations changes and provably
+None of the five is measured. They are strictly-fewer-allocations changes and provably
 equivalent, which is why they ship without numbers attached and aren't claimed to be large.
 
 ### Rebuilding
