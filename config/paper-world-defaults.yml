@@ -76,7 +76,7 @@ command-blocks:
 entities:
   armor-stands:
     do-collision-entity-lookups: false
-    tick: true
+    tick: false
   behavior:
     allow-spider-world-border-climbing: true
     baby-zombie-movement-modifier: 0.5
@@ -137,9 +137,20 @@ entities:
   spawning:
     all-chunks-are-slime-chunks: false
     alt-item-despawn-rate:
-      enabled: false
+      enabled: true
       items:
+        andesite: 300
+        cobbled_deepslate: 300
         cobblestone: 300
+        deepslate: 300
+        diorite: 300
+        dirt: 300
+        granite: 300
+        gravel: 300
+        netherrack: 300
+        rotten_flesh: 300
+        sand: 300
+        tuff: 300
     count-all-mobs-for-spawning: false
     creative-arrow-despawn-rate: default
     despawn-range-shape: ELLIPSOID
@@ -157,8 +168,8 @@ entities:
         hard: default
         soft: default
       monster:
-        hard: default
-        soft: default
+        hard: 48
+        soft: 28
       underground_water_creature:
         hard: default
         soft: default
@@ -317,10 +328,10 @@ tick-rates:
   behavior:
     villager:
       validatenearbypoi: -1
-  container-update: 1
+  container-update: 3
   dry-farmland: 1
-  grass-spread: 1
-  mob-spawner: 1
+  grass-spread: 4
+  mob-spawner: 2
   sensor:
     villager:
       secondarypoisensor: 40

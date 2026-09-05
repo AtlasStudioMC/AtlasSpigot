@@ -85,9 +85,37 @@ mobs, so nothing stays inactive indefinitely.
 Paper rewrites `non-player-arrow-despawn-rate: 60` as the quoted `'60'`, since the field is a
 `default | number` union. The shipped config uses the quoted form so it doesn't diff on every boot.
 
+### Second pass: the hard tier
+
+A further pass on request. Everything below is a **visible gameplay change**, and several are
+substantial. All boot-tested; the server accepted every value.
+
+| Setting | From | To | What you give up |
+|---|---|---|---|
+| `server.properties` `simulation-distance` | 4 | 3 | Fewer chunks tick at all. Direct TPS win, smaller live area around each player. |
+| `entity-broadcast-range-percentage` | 100 | 50 | Entities are sent to clients at half the distance. Large packet saving; things pop in later. |
+| `spigot.yml` `nerf-spawner-mobs` | false | true | **Spawner mobs lose their AI entirely.** Large win, and it breaks grinder designs that rely on mobs walking or being pushed. |
+| `ticks-per.hopper-check` | 1 | 8 | Hoppers scan for items 8× less often. |
+| `hopper-amount` | 1 | 3 | Moves 3 items per transfer, so throughput roughly holds despite the slower checks. |
+| `arrow-despawn-rate` | 1200 | 300 | Arrows last 15s instead of 60s. |
+| `merge-radius.exp` | -1.0 (off) | 4.0 | XP orbs merge. Big win at grinders; orb counts visibly differ. |
+| `paper` `ticks.container-update` | 1 | 3 | Fewer container update packets; open inventories refresh slightly slower. |
+| `ticks.grass-spread` | 1 | 4 | Grass and mycelium spread 4× slower. |
+| `ticks.mob-spawner` | 1 | 2 | Spawners tick half as often. |
+| `armor-stands.tick` | true | false | Armor stands stop ticking. Static decorative stands are unaffected; anything relying on gravity or movement is. |
+| `alt-item-despawn-rate` | off | on, 12 junk items at 300 ticks | Cobblestone, dirt, gravel, sand, the stone variants, netherrack and rotten flesh vanish in 15s instead of 5 minutes. |
+| `despawn-ranges.monster` | default (32/128) | soft 28 / hard 48 | Monsters despawn far closer to the player. Substantial entity-count reduction; distant mob farms suffer. |
+| `atlas-global` `dab.start-distance` | 12.0 | 8.0 | DAB throttles entity brains starting much closer in. |
+| `dab.activation-dist-mod` | 8.0 | 7.0 | Upstream's own comment: *"If you want further away entities to tick less often, use 7."* |
+
+Paper re-sorts the `alt-item-despawn-rate` item list alphabetically on write. The shipped config
+uses its ordering so it doesn't diff on every boot.
+
 ### Still deliberately off
 
-- **`hopper.disable-move-event`** — the single biggest remaining win, and it stays off. It stops
+- **`hopper.disable-move-event`** — the single biggest remaining win, and the only one held back
+  purely for plugin compatibility rather than gameplay. Note this is *not* the same as the
+  `ticks-per.hopper-check` change above, which is tuned. It stops
   firing `InventoryMoveItemEvent`, which shop, economy and sorting plugins subscribe to. Enabling
   it would break working plugins, and "every plugin keeps working" is the one promise this project
   makes that a config knob shouldn't quietly cancel.

@@ -24,12 +24,12 @@ world-settings:
     dragon-death-sound-radius: 0
     merge-radius:
       item: 3.5
-      exp: -1.0
+      exp: 4.0
     mob-spawn-range: 6
     item-despawn-rate: 6000
-    arrow-despawn-rate: 1200
+    arrow-despawn-rate: 300
     trident-despawn-rate: 1200
-    nerf-spawner-mobs: false
+    nerf-spawner-mobs: true
     unload-frozen-chunks: false
     growth:
       cactus-modifier: 100
@@ -89,8 +89,8 @@ world-settings:
       other: 32
     ticks-per:
       hopper-transfer: 8
-      hopper-check: 1
-    hopper-amount: 1
+      hopper-check: 8
+    hopper-amount: 3
     hopper-can-load-chunks: false
     seed-village: 10387312
     seed-desert: 14357617
