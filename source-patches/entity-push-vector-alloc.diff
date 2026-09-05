@@ -1,0 +1,38 @@
+Don't allocate a Bukkit Vector for entity pushes nothing observes.
+
+Entity#push(double, double, double, Entity) built an org.bukkit.util.Vector on every call, before
+checking whether anything would use it. Ordinary entity-vs-entity crowding goes through the
+pushingEntity == null path, where the Vector was constructed only to be unpacked straight back into
+three doubles.
+
+EntityPushedByEntityAttackEvent was also fired unguarded. It can only cancel the push or replace
+the knockback, so with no listener registered the raw xa/ya/za are what end up applied either way -
+skipping the event is exactly equivalent.
+
+push() runs for every entity being shoved by another, every tick, so this is one of the hotter
+allocation sites on a crowded server.
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/entity/Entity.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/entity/Entity.java
+@@ -2604,11 +2604,26 @@
+-            org.bukkit.util.Vector delta = new org.bukkit.util.Vector(xa, ya, za);
+-            if (pushingEntity != null) {
+-                EntityPushedByEntityAttackEvent event = new EntityPushedByEntityAttackEvent(this.getBukkitEntity(), Cause.PUSH, pushingEntity.getBukkitEntity(), delta);
+-                if (!event.callEvent()) return;
+-                delta = event.getKnockback();
+-            }
+-            this.setDeltaMovement(this.getDeltaMovement().add(delta.getX(), delta.getY(), delta.getZ()));
++            double pushX = xa;
++            double pushY = ya;
++            double pushZ = za;
++            if (pushingEntity != null
++                && EntityPushedByEntityAttackEvent.getHandlerList().getRegisteredListeners().length != 0) {
++                org.bukkit.util.Vector delta = new org.bukkit.util.Vector(xa, ya, za);
++                EntityPushedByEntityAttackEvent event = new EntityPushedByEntityAttackEvent(this.getBukkitEntity(), Cause.PUSH, pushingEntity.getBukkitEntity(), delta);
++                if (!event.callEvent()) return;
++                delta = event.getKnockback();
++                pushX = delta.getX();
++                pushY = delta.getY();
++                pushZ = delta.getZ();
++            }
++            this.setDeltaMovement(this.getDeltaMovement().add(pushX, pushY, pushZ));

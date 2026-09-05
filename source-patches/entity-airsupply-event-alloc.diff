@@ -1,0 +1,25 @@
+Skip the air-change event object when it cannot change anything.
+
+Entity#setAirSupply allocated an EntityAirChangeEvent before checking this.valid, so the event was
+built even during worldgen where it is deliberately never fired. With no listener registered the
+event can neither cancel the change nor rewrite the amount, so the outcome is always
+entityData.set(supply); taking that directly is exactly equivalent.
+
+The method runs once per tick for anything drowning or refilling its air after leaving water, so
+mobs pathing through rivers and oceans hit it continuously.
+
+Behaviour is unchanged when a listener exists: the event is built, fired, and both the cancel path
+(including the desync resend for players) and the rewritten amount work as before.
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/entity/Entity.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/entity/Entity.java
+@@ -4026,6 +4026,16 @@
+     public void setAirSupply(final int supply) {
++        // AtlasSpigot start - fast path when the event cannot change anything
++        if (!this.valid || org.bukkit.event.entity.EntityAirChangeEvent.getHandlerList().getRegisteredListeners().length == 0) {
++            this.entityData.set(DATA_AIR_SUPPLY_ID, supply);
++            return;
++        }
++        // AtlasSpigot end
+         // CraftBukkit start
+         org.bukkit.event.entity.EntityAirChangeEvent event = new org.bukkit.event.entity.EntityAirChangeEvent(this.getBukkitEntity(), supply);

@@ -167,6 +167,28 @@ them.
 **Not measured.** It is a strictly-fewer-allocations change and provably equivalent, which is why
 it ships without a number attached. It is not claimed to be a large win.
 
+**`entity-push-vector-alloc.diff`** — `Entity#push(double, double, double, Entity)` built an
+`org.bukkit.util.Vector` on every call, before checking whether anything would read it. Ordinary
+entity-vs-entity crowding takes the `pushingEntity == null` path, where that Vector was constructed
+only to be unpacked straight back into three doubles. `EntityPushedByEntityAttackEvent` was fired
+unguarded as well; it can only cancel the push or replace the knockback, so with no listener the
+raw values are applied either way. `push()` runs for every entity shoved by another, every tick, so
+this is one of the hotter allocation sites on a crowded server.
+
+**`entity-airsupply-event-alloc.diff`** — `Entity#setAirSupply` allocated an
+`EntityAirChangeEvent` *before* the `this.valid` check, so the object was built even during worldgen
+where it is deliberately never fired. With no listener the event can neither cancel the change nor
+rewrite the amount, making `entityData.set(supply)` the only possible outcome. Runs per tick for
+anything drowning or refilling air, so mobs pathing through water hit it continuously.
+
+All three follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
+work that nothing will read.** None changes behaviour when a listener is registered. Paper already
+does this in places — `EntityCollideWithEntityEvent` in `Entity#push(Entity)` is guarded exactly
+this way — these are the spots it hadn't reached.
+
+None of the three is measured. They are strictly-fewer-allocations changes and provably
+equivalent, which is why they ship without numbers attached and aren't claimed to be large.
+
 ### Rebuilding
 
 The five branding diffs in `source-patches/` are written for reading, not for `git apply` — they
