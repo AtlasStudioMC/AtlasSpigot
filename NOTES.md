@@ -62,6 +62,22 @@ applied**, and are listed so the choice stays with the server owner:
 - **View and simulation distance** — already at 6/4, which is well below vanilla. Lowering further
   trades visible world for TPS.
 
+## JVM flags
+
+`-XX:+PerfDisableSharedMem` was missing from every `start.sh` in this repo — all 16 tracks. It is
+part of Aikar's published set, and PaperMC's own docs describe it as preventing "GC to write to
+file system which can cause major latency if disk IO is high". Added everywhere.
+
+The one cost is that `jps` and `jstat` can no longer discover the JVM through its shared-memory
+file, so profilers need to attach by PID.
+
+`-XX:+AlwaysPreTouch` remains deliberately omitted; the reasoning is in the header of `start.sh`.
+
+> A note on the shape of that edit: the flag comment cannot live between the backslash-continued
+> lines of the `java` invocation. Bash joins those lines first, so a `#` there comments out the
+> remainder — including `-jar ... nogui` — and the server silently starts with no jar. The comment
+> sits above the `java` line for that reason.
+
 ## Not benchmarked
 
 The published benchmark numbers are from 1.21.4. No measurements have been taken on 26.2, so no

@@ -16,6 +16,10 @@
 
 MEMORY="8G"
 
+# -XX:+PerfDisableSharedMem keeps the JVM from writing perf data to the filesystem. It is
+# part of Aikar's flags and was missing here. On a busy disk those writes stall at a
+# safepoint and surface as GC latency. Cost: jps/jstat can no longer see this JVM via its
+# shared-memory file, so attach by PID if you profile.
 java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:+UseG1GC \
   -XX:+ParallelRefProcEnabled \
@@ -32,6 +36,7 @@ java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:G1MixedGCLiveThresholdPercent=90 \
   -XX:G1RSetUpdatingPauseTimePercent=5 \
   -XX:SurvivorRatio=32 \
+  -XX:+PerfDisableSharedMem \
   -XX:MaxTenuringThreshold=1 \
   -Dusing.aikars.flags=https://mcflags.emc.gs \
   -Daikars.new.flags=true \
