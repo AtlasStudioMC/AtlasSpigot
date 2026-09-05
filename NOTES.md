@@ -143,6 +143,42 @@ added to it, so the shipped copy carries none; the reasoning lives here instead.
 - **`increase-time-statistics`** — makes `CROUCH_TIME`, `TIME_SINCE_DEATH` and `TIME_SINCE_REST`
   sampled approximations; `TIME_SINCE_REST` drives phantom spawning.
 
+## Source patches
+
+Up to now every 26.2 release shipped the same jar with config changes on top. This one rebuilds it,
+and adds the first patch that isn't branding.
+
+**`livingentity-equipment-event-alloc.diff`** — `LivingEntity#collectEquipmentChanges` converted
+both the old and new `ItemStack` to Bukkit types on every changed equipment slot. Those
+`asBukkitCopy` calls are deep copies, and their only consumers are `EntityEquipmentChangedEvent`
+and `PlayerArmorChangeEvent`, both of which were constructed and fired unconditionally. On a server
+with no listener for either — which is most servers — each changed slot cost two ItemStack copies,
+an EnumMap and an event object, all discarded immediately.
+
+Leaf's Lithium equipment tracking already short-circuits the method when nothing changed, so this
+targets what remains: equipment that genuinely changed, on a server nobody is listening on.
+Armoured mobs, armour stands and any mob that picks up items hit this path.
+
+Listener presence is resolved once per call rather than per slot, and semantics are unchanged —
+when a listener exists, the copies happen and both events fire exactly as before. There is no path
+where a listener sees a null item, because the copies are made whenever either event will read
+them.
+
+**Not measured.** It is a strictly-fewer-allocations change and provably equivalent, which is why
+it ships without a number attached. It is not claimed to be a large win.
+
+### Rebuilding
+
+The five branding diffs in `source-patches/` are written for reading, not for `git apply` — they
+have no valid hunk headers. Reapplying them means making the edits by hand against a fresh
+`applyAllPatches` tree. The `Metrics.java` one is the fiddly one: it rewrites `getPluginData` into
+`getServiceData` and changes the submitted payload from the old `plugins` array to the v2
+`service` object.
+
+Build with `./gradlew :leaf-server:createPaperclipJar` (note the project path is `:leaf-server`,
+not `:leaf-262:leaf-server`). Output lands at
+`leaf-server/build/libs/leaf-paperclip-26.2.local-SNAPSHOT.jar`.
+
 ## JVM flags
 
 `-XX:+PerfDisableSharedMem` was missing from every `start.sh` in this repo — all 16 tracks. It is
