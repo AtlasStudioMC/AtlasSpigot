@@ -1,0 +1,16 @@
+Skip the jump event when nothing is listening.
+
+LivingEntity's jump path built a CraftEntity handle and an EntityJumpEvent on every jump. The
+event's only power is to veto the jump, so with no listener registered it always returns true and
+the jump happens regardless.
+
+Mobs jump constantly while pathfinding - over blocks, up slabs, out of water - so this runs far
+more often than the name suggests.
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/entity/LivingEntity.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/entity/LivingEntity.java
+@@ -3907,1 +3907,3 @@
+-                        if (new EntityJumpEvent(getBukkitLivingEntity()).callEvent()) {
++                        if (EntityJumpEvent.getHandlerList().getRegisteredListeners().length == 0
++                            || new EntityJumpEvent(getBukkitLivingEntity()).callEvent()) {
+                         this.jumpFromGround();

@@ -191,12 +191,23 @@ merge. Orb merging runs continuously at any grinder, and more so now that this p
 always `true` with no listener. Called from `ItemEntity#mergeWithNeighbours`, which runs from the
 item's tick, so it fires wherever drops pile up.
 
-All five follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
-work that nothing will read.** None changes behaviour when a listener is registered. Paper already
-does this in places — `EntityCollideWithEntityEvent` in `Entity#push(Entity)` is guarded exactly
-this way — these are the spots it hadn't reached.
+**`world-tracking-events-alloc.diff`** — `EntityAddToWorldEvent` and `EntityRemoveFromWorldEvent`
+are notification-only: neither implements `Cancellable` and both call sites discard the result.
+They fire from `onTrackingStart`/`onTrackingEnd`, which run for every entity as chunks load and
+unload, so on a server with players moving this is continuous. Each call built an event and
+dispatched it through the plugin manager to do nothing at all.
 
-None of the five is measured. They are strictly-fewer-allocations changes and provably
+**`entity-jump-event-alloc.diff`** — the jump path built a CraftEntity handle and an
+`EntityJumpEvent` on every jump, an event whose only power is to veto. Mobs jump constantly while
+pathfinding, so this fires far more often than the name suggests.
+
+All seven follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
+work that nothing will read.** None changes behaviour when a listener is registered. Paper already does this in places, and checking first has now stopped three redundant patches:
+`EntityCollideWithEntityEvent` in `Entity#push(Entity)`, `BlockPhysicsEvent` behind
+`ServerLevel.hasPhysicsEvent`, and `PlayerUntrackEntityEvent` in `Entity` are all already guarded
+upstream. These seven are the spots it hadn't reached.
+
+None of the seven is measured. They are strictly-fewer-allocations changes and provably
 equivalent, which is why they ship without numbers attached and aren't claimed to be large.
 
 ### Rebuilding

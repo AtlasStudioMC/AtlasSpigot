@@ -1,0 +1,17 @@
+Skip the entity add/remove world notifications when nothing is listening.
+
+EntityAddToWorldEvent and EntityRemoveFromWorldEvent are notification-only - neither implements
+Cancellable, and both call sites discard the result. They fire from onTrackingStart/onTrackingEnd,
+which run for every entity as chunks load and unload, so on any server with players moving around
+this is continuous churn. Each call built an event object and dispatched it through the plugin
+manager to do precisely nothing.
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/server/level/ServerLevel.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/server/level/ServerLevel.java
+@@ -3262,1 +3262,6 @@
++            if (EntityAddToWorldEvent.getHandlerList().getRegisteredListeners().length != 0)
+             new EntityAddToWorldEvent(entity.getBukkitEntity(), ServerLevel.this.getWorld()).callEvent();
+
+@@ -3335,1 +3340,6 @@
++            if (EntityRemoveFromWorldEvent.getHandlerList().getRegisteredListeners().length != 0)
+             new EntityRemoveFromWorldEvent(entity.getBukkitEntity(), ServerLevel.this.getWorld()).callEvent();
