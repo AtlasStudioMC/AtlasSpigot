@@ -210,6 +210,33 @@ upstream. These seven are the spots it hadn't reached.
 None of the seven is measured. They are strictly-fewer-allocations changes and provably
 equivalent, which is why they ship without numbers attached and aren't claimed to be large.
 
+### Examined and rejected
+
+A tree-wide scan found 59 inline `new SomeEvent(...).callEvent()` sites across 44 distinct events.
+After the seven patches above, what remains is either already handled upstream or not worth the
+risk. Recorded so the same ground isn't covered again:
+
+- **Already guarded by Paper** — `EntityCollideWithEntityEvent` (`Entity#push(Entity)`),
+  `BlockPhysicsEvent` (behind `ServerLevel.hasPhysicsEvent`), `PlayerUntrackEntityEvent`
+  (`Entity#broadcastToPlayer`).
+- **`CraftEventFactory` spawn helpers** (`callEntitySpawnEvent`, `callCreatureSpawnEvent`,
+  `callItemSpawnEvent`) — these return the constructed event to their callers, which read it. The
+  object has to exist regardless, so guarding saves nothing.
+- **`PlayerMoveEvent`** — allocates three `Location` objects plus the event per movement packet,
+  so it looks like the biggest remaining target. Deliberately left alone. The surrounding code
+  handles cancellation, plugin-initiated teleports and desync recovery, and a mistake there causes
+  rubber-banding rather than a clean failure. It is also among the most widely listened-to events
+  in Minecraft, so the guard would rarely trigger in practice: high risk, low applicability.
+- **`PlayerAttemptPickupItemEvent`** — the caller reads `getFlyAtPlayer()` off the event, so a
+  guard would have to replicate the event's default rather than skip it.
+- **Glider slot stream** (`LivingEntity` ~4077) — a `stream().filter().toList()` per call, but it
+  only runs once a second per actively gliding player, and rewriting it risks changing which
+  equipment slot takes durability damage.
+
+The pattern these seven patches exploit is essentially exhausted. Going further means editing game
+logic rather than skipping provably-dead work, which is a different risk category and should not
+happen without measurement behind it.
+
 ### Rebuilding
 
 The five branding diffs in `source-patches/` are written for reading, not for `git apply` — they
