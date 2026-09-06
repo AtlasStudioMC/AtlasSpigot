@@ -1,0 +1,33 @@
+Stop allocating two Locations and two events for every boat, every tick.
+
+AbstractBoat#tick unconditionally built a Bukkit Location for the current position, cast the boat to
+a CraftEntity, fired VehicleUpdateEvent, optionally fired VehicleMoveEvent, and then allocated a
+second Location for lastLocation. VehicleUpdateEvent's result is discarded outright and
+VehicleMoveEvent only reports movement, so with neither listened for none of that is observable.
+
+Boats are common - transport, ice roads, boat farms - and this is per boat per tick, so it adds up
+in a way the event name does not suggest.
+
+lastLocation is set to null rather than left stale in the unlistened branch. The existing code
+already skips VehicleMoveEvent when lastLocation is null, so a plugin registering later seeds
+cleanly on its first tick instead of receiving one bogus move spanning the entire period nothing
+was listening.
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/entity/vehicle/boat/AbstractBoat.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/entity/vehicle/boat/AbstractBoat.java
+@@ -277,11 +277,26 @@
++        final boolean vehicleUpdateListened = VehicleUpdateEvent.getHandlerList().getRegisteredListeners().length != 0;
++        final boolean vehicleMoveListened = VehicleMoveEvent.getHandlerList().getRegisteredListeners().length != 0;
++        if (vehicleUpdateListened || vehicleMoveListened) {
+         org.bukkit.Location to = CraftLocation.toBukkit(this.position(), this.level(), this.getYRot(), this.getXRot());
+         org.bukkit.entity.Vehicle vehicle = (org.bukkit.entity.Vehicle) this.getBukkitEntity();
+-        new VehicleUpdateEvent(vehicle).callEvent();
+-        if (this.lastLocation != null && !this.lastLocation.equals(to)) {
++        if (vehicleUpdateListened) new VehicleUpdateEvent(vehicle).callEvent();
++        if (vehicleMoveListened && this.lastLocation != null && !this.lastLocation.equals(to)) {
+             new VehicleMoveEvent(vehicle, this.lastLocation, to).callEvent();
+         }
+         this.lastLocation = vehicle.getLocation();
++        } else {
++            this.lastLocation = null;
++        }

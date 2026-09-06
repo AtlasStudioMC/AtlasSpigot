@@ -270,6 +270,11 @@ patch(MC + "server/MinecraftServer.java", [
 ], "opt: server tick start/end events")
 
 
+patch(MC + "world/entity/vehicle/boat/AbstractBoat.java", [
+    ("        new org.bukkit.event.vehicle.VehicleUpdateEvent(vehicle).callEvent();\n\n        if (this.lastLocation != null && !this.lastLocation.equals(to)) {",
+     "        if (org.bukkit.event.vehicle.VehicleUpdateEvent.getHandlerList().getRegisteredListeners().length != 0) new org.bukkit.event.vehicle.VehicleUpdateEvent(vehicle).callEvent(); // AtlasSpigot\n\n        if (org.bukkit.event.vehicle.VehicleMoveEvent.getHandlerList().getRegisteredListeners().length != 0 && this.lastLocation != null && !this.lastLocation.equals(to)) { // AtlasSpigot"),
+], "opt: boat tick events")
+
 # ---- round 4: block-inside, effect tick, tick loop, spawn paths ----
 import re as _re
 
