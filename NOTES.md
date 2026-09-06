@@ -294,6 +294,19 @@ sound rather than a private trick. These are the sites they did not cover.
 
 That brings the total to **sixteen** source patches.
 
+**`boat-tick-events-alloc.diff`** — `AbstractBoat#tick` built a Bukkit `Location`, cast to a
+CraftEntity, fired `VehicleUpdateEvent`, optionally fired `VehicleMoveEvent`, and allocated a second
+`Location` for `lastLocation` — **every boat, every tick**. `VehicleUpdateEvent`'s result is
+discarded outright. `lastLocation` is nulled rather than left stale in the unlistened branch, so a
+plugin registering later seeds cleanly instead of receiving one bogus move spanning the whole quiet
+period. Seventeen patches now.
+
+While checking this round: `EntityMoveEvent` in `LivingEntity#aiStep` and Purpur's
+`RidableMoveEvent` are **already guarded**, via cached `hasEntityMoveEvent` / `hasRidableMoveEvent`
+fields on `ServerLevel` — a better version of the same idea, since it avoids even the handler-list
+lookup. A first scan flagged them because the guard sits on the enclosing `if` rather than the event
+line; widening the search window to 25 lines removed that whole class of false positive.
+
 ### The low-spec profile
 
 [`lowspec/`](lowspec/) is a complete config set for roughly 3GB RAM, an older CPU already near 100%
