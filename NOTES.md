@@ -280,6 +280,46 @@ That last one got a functional test rather than just inspection: a plugin that *
 `ServerTickEndEvent` (`benchmarks/atlas-bench`) still collects a full 200-sample set against the
 patched jar, proving the guard doesn't suppress the event when something is listening.
 
+**`hot-loop-events-alloc.diff`** — four more families, all on per-tick or per-spawn paths.
+`EntityInsideBlockEvent` across 24 byte-identical sites (bubble columns, cobwebs, berry bushes,
+fire, portals, pressure plates — every tick an entity stays inside one); `EntityEffectTickEvent`
+on every effect application tick; `ServerTickStartEvent`/`ServerTickEndEvent`, two allocations
+every tick forever; and the three spawn-path events `PreCreatureSpawnEvent` (`EntityType#spawn`),
+`PreSpawnerSpawnEvent` and `PhantomPreSpawnEvent`.
+
+Worth recording: **Leaf already guards the hottest `PreCreatureSpawnEvent` site itself**, in
+`NaturalSpawner#isValidSpawnPostitionForType`, with the comment *"Skip PreCreatureSpawnEvent if no
+listeners"*. Upstream arriving at the same technique independently is good evidence the pattern is
+sound rather than a private trick. These are the sites they did not cover.
+
+That brings the total to **sixteen** source patches.
+
+### The low-spec profile
+
+[`lowspec/`](lowspec/) is a complete config set for roughly 3GB RAM, an older CPU already near 100%
+thread usage, ~10GB disk and a heavy plugin count. It is not the main config nudged — it trades
+visible world and mob density for tick time throughout: `view-distance` 3, `simulation-distance` 2,
+entity broadcast at 25%, monster cap 15, activation ranges at 8–12, monsters despawning at 16/32,
+chunk load/send rates capped and `max-joins-per-tick` back to 1, saving spread thinner with
+`sync-chunk-writes=false`.
+
+Two deliberate differences from the main config:
+
+- **`hopper.disable-move-event` is off there.** It is the biggest single win available and it stops
+  `InventoryMoveItemEvent` firing. On a 45-plugin server the odds something depends on it are high,
+  and a fast server that breaks the shop is not faster.
+- **The heap is 1600M, not 3G.** Metaspace with that many plugins, thread stacks, Netty direct
+  buffers and the code cache all live outside the heap. `-Xmx3G` on a 3GB box produces a server the
+  kernel kills, not a bigger one. `G1HeapRegionSize` drops to 4M so G1 still gets a sensible region
+  count at that size.
+
+`density-function-compiler` appeared as a new key on this branch and looks made for a CPU-bound
+machine — it compiles worldgen density functions to JVM bytecode. It stays off: Leaf marks the
+module `@Experimental`, and that is a hard no here regardless of how attractive the win looks.
+
+Verified: boots at 1600M in 29.9s with zero errors, and every changed file comes back
+byte-identical after the server writes it.
+
 ### Applying the patches
 
 `source-patches/apply.py` applies all thirteen patch groups to a freshly patched Leaf tree.

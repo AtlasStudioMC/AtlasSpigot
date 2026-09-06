@@ -254,11 +254,53 @@ def apply_bulk(root):
     return ok
 
 
+patch(MC + "world/effect/MobEffectInstance.java", [
+    ("            && new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent() // Paper - Add EntityEffectTickEvent",
+     "            && (io.papermc.paper.event.entity.EntityEffectTickEvent.getHandlerList().getRegisteredListeners().length == 0\n"
+     "                || new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent()) // AtlasSpigot"),
+], "opt: per-tick effect event")
+
+patch(MC + "server/MinecraftServer.java", [
+    ("        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events",
+     "        if (com.destroystokyo.paper.event.server.ServerTickStartEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
+     "        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events"),
+    ("        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();",
+     "        if (com.destroystokyo.paper.event.server.ServerTickEndEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
+     "        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();"),
+], "opt: server tick start/end events")
+
+
+# ---- round 4: block-inside, effect tick, tick loop, spawn paths ----
+import re as _re
+
+def _patch_entity_inside_block(root):
+    """24 byte-identical call sites across world/level/block - guarded with one pass."""
+    OLD = ("if (!new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), "
+           "org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } "
+           "// Paper - Add EntityInsideBlockEvent")
+    NEW = ("if (io.papermc.paper.event.entity.EntityInsideBlockEvent.getHandlerList().getRegisteredListeners().length != 0 "
+           "// AtlasSpigot - skip CraftBlock + event when unlistened\n"
+           "            && !new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), "
+           "org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } "
+           "// Paper - Add EntityInsideBlockEvent")
+    n = 0
+    base = root / "leaf-server/src/minecraft/java/net/minecraft/world/level/block"
+    for f in base.rglob("*.java"):
+        t = f.read_text()
+        if OLD not in t:
+            continue
+        n += t.count(OLD)
+        f.write_text(t.replace(OLD, NEW))
+    return n
+
+
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     if not (root / "leaf-server").is_dir():
         sys.exit(f"error: {root} does not look like a Leaf checkout")
     failed = []
+    inside = _patch_entity_inside_block(root)
+    print(f"  applied: opt: EntityInsideBlockEvent ({inside} sites)")
     for rel, pairs, label in PATCHES:
         f = root / rel
         if not f.exists():
