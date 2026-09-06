@@ -164,6 +164,11 @@ patch(PS + "org/bukkit/craftbukkit/event/CraftEventFactory.java", [
      "        // AtlasSpigot - streams every entity and forces CraftEntity creation; returns void\n"
      "        if (EntitiesLoadEvent.getHandlerList().getRegisteredListeners().length == 0) {\n            return;\n        }\n"
      "        List<org.bukkit.entity.Entity> bukkitEntities"),
+    ("    public static void callEntityRemoveEvent(Entity entity, EntityRemoveEvent.Cause cause) {\n        if (entity instanceof ServerPlayer) {",
+     "    public static void callEntityRemoveEvent(Entity entity, EntityRemoveEvent.Cause cause) {\n"
+     "        // AtlasSpigot - universal removal path; returns void and getBukkitEntity() creates wrappers\n"
+     "        if (EntityRemoveEvent.getHandlerList().getRegisteredListeners().length == 0) {\n            return;\n        }\n"
+     "        if (entity instanceof ServerPlayer) {"),
     ("    public static void callEntitiesUnloadEvent(Level level, ChunkPos pos, List<Entity> entities) {\n        List<org.bukkit.entity.Entity> bukkitEntities",
      "    public static void callEntitiesUnloadEvent(Level level, ChunkPos pos, List<Entity> entities) {\n"
      "        // AtlasSpigot - same as the load side, on every chunk unload\n"

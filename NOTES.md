@@ -201,13 +201,13 @@ dispatched it through the plugin manager to do nothing at all.
 `EntityJumpEvent` on every jump, an event whose only power is to veto. Mobs jump constantly while
 pathfinding, so this fires far more often than the name suggests.
 
-All nine follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
+All ten follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
 work that nothing will read.** None changes behaviour when a listener is registered. Paper already does this in places, and checking first has now stopped three redundant patches:
 `EntityCollideWithEntityEvent` in `Entity#push(Entity)`, `BlockPhysicsEvent` behind
 `ServerLevel.hasPhysicsEvent`, and `PlayerUntrackEntityEvent` in `Entity` are all already guarded
 upstream. These seven are the spots it hadn't reached.
 
-None of the nine is measured. They are strictly-fewer-allocations changes and provably
+None of the ten is measured. They are strictly-fewer-allocations changes and provably
 equivalent, which is why they ship without numbers attached and aren't claimed to be large.
 
 **`chunk-tracking-events-alloc.diff`** — four sites on the chunk load/unload path, which is one
@@ -230,6 +230,15 @@ and only a listener can call `setSaveChunk()`, so with none registered `isSaveCh
 definitively `true` and `mustNotSave` definitively `false`. Confirmed empirically too — a build
 with these patches produces the same world output as build 21 without them, including after an
 explicit `save-all`.
+
+**`entity-remove-event-alloc.diff`** — `CraftEventFactory#callEntityRemoveEvent` sits in
+`Entity#setRemoved`, the single path every entity takes on its way out of the world: mob deaths,
+item and XP orb despawns, projectiles expiring, entities dropped when a chunk unloads. The method
+returns void, and `getBukkitEntity()` creates the CraftEntity wrapper when one doesn't exist, so
+with no listener it was allocating wrappers for entities that were already leaving. This project's
+own config makes it hotter — monsters despawn at 28/48, items and arrows at 15 seconds — so the
+removal rate is deliberately high. The listener check goes ahead of the existing
+player/null-cause/generation guards so the common case exits immediately.
 
 ### Applying the patches
 
@@ -269,6 +278,13 @@ risk. Recorded so the same ground isn't covered again:
   handles cancellation, plugin-initiated teleports and desync recovery, and a mistake there causes
   rubber-banding rather than a clean failure. It is also among the most widely listened-to events
   in Minecraft, so the guard would rarely trigger in practice: high risk, low applicability.
+- **`PlayerNaturallySpawnCreaturesEvent`** — allocated per player per tick during the spawn
+  phase, which looks like an easy win. It is not: the event is stored on the player and both
+  consumers in `ChunkMap` treat a null event as *skip spawning for this player entirely*.
+  Skipping construction would silently disable mob spawning. Making it safe means restructuring
+  three files to fall back to the computed radius, which is not worth one small allocation.
+- **`callPrepareResultEvent`** — void, but it calls `setItem` and `broadcastChanges` after the
+  event using values read off it, so those side effects must still run. Not a clean guard.
 - **`PlayerAttemptPickupItemEvent`** — the caller reads `getFlyAtPlayer()` off the event, so a
   guard would have to replicate the event's default rather than skip it.
 - **Glider slot stream** (`LivingEntity` ~4077) — a `stream().filter().toList()` per call, but it
