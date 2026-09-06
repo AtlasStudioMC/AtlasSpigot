@@ -176,6 +176,23 @@ patch(PS + "org/bukkit/craftbukkit/event/CraftEventFactory.java", [
      "        List<org.bukkit.entity.Entity> bukkitEntities"),
 ], "opt: item merge + chunk entity events")
 
+patch(MC + "world/effect/MobEffectInstance.java", [
+    ("            && new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent() // Paper - Add EntityEffectTickEvent",
+     "            // AtlasSpigot - veto-only, runs on every effect application tick\n"
+     "            && (io.papermc.paper.event.entity.EntityEffectTickEvent.getHandlerList().getRegisteredListeners().length == 0\n"
+     "                || new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent()) // Paper - Add EntityEffectTickEvent"),
+], "opt: potion effect tick event")
+
+patch(MC + "server/MinecraftServer.java", [
+    ("        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events",
+     "        // AtlasSpigot - two allocations every tick, forever\n"
+     "        if (com.destroystokyo.paper.event.server.ServerTickStartEvent.getHandlerList().getRegisteredListeners().length != 0)\n"
+     "        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events"),
+    ("        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();",
+     "        if (com.destroystokyo.paper.event.server.ServerTickEndEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
+     "        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();"),
+], "opt: server tick start/end events")
+
 patch(MC + "world/level/chunk/LevelChunk.java", [
     ("            org.bukkit.Chunk bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);\n"
      "            server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkLoadEvent(bukkitChunk, this.needsDecoration));",
@@ -205,6 +222,38 @@ patch(MC + "world/level/chunk/LevelChunk.java", [
 ], "opt: chunk load/unload events")
 
 
+# Applied across every file under a directory rather than one named file, because the same line is
+# emitted into ~24 generated block classes and listing them individually would rot on the next
+# upstream release that adds or removes one.
+BULK = [(
+    "leaf-server/src/minecraft/java/net/minecraft/world/level/block",
+    "if (!new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } // Paper - Add EntityInsideBlockEvent",
+    "if (io.papermc.paper.event.entity.EntityInsideBlockEvent.getHandlerList().getRegisteredListeners().length != 0 // AtlasSpigot - skip CraftBlock + event when unlistened\n"
+    "            && !new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } // Paper - Add EntityInsideBlockEvent",
+    "opt: entity-inside-block event",
+    20,  # minimum expected hits; fewer means upstream changed the shape
+)]
+
+
+def apply_bulk(root):
+    ok = True
+    for reldir, old, new, label, minimum in BULK:
+        d = root / reldir
+        hits = 0
+        for f in d.rglob("*.java"):
+            t = f.read_text()
+            if old not in t:
+                continue
+            hits += t.count(old)
+            f.write_text(t.replace(old, new))
+        if hits < minimum:
+            print(f"  FAILED: {label} - matched {hits} sites, expected at least {minimum}")
+            ok = False
+        else:
+            print(f"  applied: {label} ({hits} sites)")
+    return ok
+
+
 def main():
     root = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     if not (root / "leaf-server").is_dir():
@@ -227,6 +276,8 @@ def main():
             f.write_text(s)
             print(f"  applied: {label}")
             continue
+    if not apply_bulk(root):
+        failed.append("bulk patch group did not match the expected number of sites")
     if failed:
         print("\nFAILED - upstream has moved these anchors:\n")
         for x in failed:
