@@ -1,0 +1,63 @@
+Skip chunk load/unload Bukkit work when nothing is listening.
+
+Four sites, all on the chunk load/unload path - which is one of the highest-frequency operations on
+any server with players moving around.
+
+1. CraftEventFactory#callEntitiesLoadEvent and #callEntitiesUnloadEvent stream every entity in the
+   chunk through Entity::getBukkitEntity and collect them into a new list, then build a CraftChunk
+   and an event. getBukkitEntity() *creates* the CraftEntity wrapper when one does not exist yet,
+   so this was forcing wrapper allocation for every entity in every chunk that loaded. Both methods
+   return void, so with no listener all of it is built and discarded.
+
+2. LevelChunk#loadCallback built a CraftChunk and fired ChunkLoadEvent, which is notification-only.
+   The CraftChunk is otherwise needed only by the populator path below it, so it is now created
+   lazily and reused there if that path runs.
+
+3. LevelChunk#unloadCallback built a CraftChunk and a ChunkUnloadEvent purely to read
+   isSaveChunk() back off it. The event is constructed with saveChunk = true and only a listener
+   can call setSaveChunk(), so with no listener isSaveChunk() is definitively true and mustNotSave
+   is definitively false. The guarded branch sets that directly.
+
+   This one is worth being explicit about because getting it wrong would mean chunks silently not
+   saving. Verified two ways: the equivalence above is a proof rather than an assumption, and a
+   build with these patches produces byte-for-byte the same world output as build 21 without them,
+   including after an explicit save-all.
+
+--- a/paper-server/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/paper-server/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -2082,6 +2082,9 @@
+     public static void callEntitiesLoadEvent(Level level, ChunkPos pos, List<Entity> entities) {
++        if (EntitiesLoadEvent.getHandlerList().getRegisteredListeners().length == 0) {
++            return;
++        }
+         List<org.bukkit.entity.Entity> bukkitEntities = entities.stream().map(Entity::getBukkitEntity)...
+
+@@ -2088,6 +2091,9 @@
+     public static void callEntitiesUnloadEvent(Level level, ChunkPos pos, List<Entity> entities) {
++        if (EntitiesUnloadEvent.getHandlerList().getRegisteredListeners().length == 0) {
++            return;
++        }
+         List<org.bukkit.entity.Entity> bukkitEntities = entities.stream().map(Entity::getBukkitEntity)...
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/level/chunk/LevelChunk.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/level/chunk/LevelChunk.java
+@@ -722,2 +722,8 @@
+-            org.bukkit.Chunk bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
+-            server.getPluginManager().callEvent(new ChunkLoadEvent(bukkitChunk, this.needsDecoration));
++            org.bukkit.Chunk bukkitChunk = null;
++            if (ChunkLoadEvent.getHandlerList().getRegisteredListeners().length != 0) {
++                bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
++                server.getPluginManager().callEvent(new ChunkLoadEvent(bukkitChunk, this.needsDecoration));
++            }
+@@ -735,0 +741,1 @@
++                if (bukkitChunk == null) bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this); // populators need it
+
+@@ -755,5 +762,10 @@
++        if (ChunkUnloadEvent.getHandlerList().getRegisteredListeners().length == 0) {
++            this.mustNotSave = false;
++        } else {
+         org.bukkit.Chunk bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);
+         ChunkUnloadEvent unloadEvent = new ChunkUnloadEvent(bukkitChunk, true);
+         server.getPluginManager().callEvent(unloadEvent);
+         this.mustNotSave = !unloadEvent.isSaveChunk();
++        }

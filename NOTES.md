@@ -201,14 +201,56 @@ dispatched it through the plugin manager to do nothing at all.
 `EntityJumpEvent` on every jump, an event whose only power is to veto. Mobs jump constantly while
 pathfinding, so this fires far more often than the name suggests.
 
-All seven follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
+All nine follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
 work that nothing will read.** None changes behaviour when a listener is registered. Paper already does this in places, and checking first has now stopped three redundant patches:
 `EntityCollideWithEntityEvent` in `Entity#push(Entity)`, `BlockPhysicsEvent` behind
 `ServerLevel.hasPhysicsEvent`, and `PlayerUntrackEntityEvent` in `Entity` are all already guarded
 upstream. These seven are the spots it hadn't reached.
 
-None of the seven is measured. They are strictly-fewer-allocations changes and provably
+None of the nine is measured. They are strictly-fewer-allocations changes and provably
 equivalent, which is why they ship without numbers attached and aren't claimed to be large.
+
+**`chunk-tracking-events-alloc.diff`** — four sites on the chunk load/unload path, which is one
+of the highest-frequency operations on a server with players moving.
+
+`CraftEventFactory#callEntitiesLoadEvent` and `#callEntitiesUnloadEvent` stream every entity in the
+chunk through `Entity::getBukkitEntity` and collect them into a new list, then build a `CraftChunk`
+and an event. `getBukkitEntity()` **creates** the CraftEntity wrapper when one doesn't exist yet,
+so this was forcing wrapper allocation for every entity in every chunk that loaded. Both methods
+return `void`. With no listener, all of it was built and discarded.
+
+`LevelChunk#loadCallback` built a `CraftChunk` and fired the notification-only `ChunkLoadEvent`;
+the CraftChunk is otherwise needed only by the populator path, so it is now created lazily and
+reused there. `LevelChunk#unloadCallback` built a CraftChunk and a `ChunkUnloadEvent` purely to
+read `isSaveChunk()` back off it.
+
+That last one deserves care, since getting it wrong would mean chunks silently not saving. The
+equivalence is a proof rather than an assumption: the event is constructed with `saveChunk = true`
+and only a listener can call `setSaveChunk()`, so with none registered `isSaveChunk()` is
+definitively `true` and `mustNotSave` definitively `false`. Confirmed empirically too — a build
+with these patches produces the same world output as build 21 without them, including after an
+explicit `save-all`.
+
+### Applying the patches
+
+`source-patches/apply.py` applies all thirteen patch groups to a freshly patched Leaf tree.
+
+The `.diff` files here are written to be *read* — they have no valid hunk headers and `git apply`
+rejects them. That was tolerable with five branding patches; at fourteen it meant every rebuild was
+hand-work, and hand-work drifts. The generated trees (`leaf-server/src/minecraft`,
+`paper-server/src/main`) are gitignored upstream, so there is no tracked baseline to diff against
+and no way to produce a real patch file. The script is the alternative: anchored search-and-replace
+with an assertion on every anchor, so it either applies cleanly or names exactly which anchor
+upstream moved.
+
+```
+git clone --depth 1 --branch ver/26.2 https://github.com/Winds-Studio/Leaf.git
+cd Leaf && ./gradlew applyAllPatches
+python3 /path/to/source-patches/apply.py .
+./gradlew :leaf-server:createPaperclipJar
+```
+
+Verified end to end on a clean clone: all thirteen groups applied, and the result compiled.
 
 ### Examined and rejected
 
