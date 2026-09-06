@@ -1,0 +1,22 @@
+Guard four more event families that fire on per-tick or per-spawn paths.
+
+EntityInsideBlockEvent - 24 byte-identical call sites across world/level/block. Each builds a
+CraftBlock and an event every time an entity is inside one of those blocks, which for bubble
+columns, cobwebs, berry bushes, fire, portals and pressure plates is every tick that entity stays
+there. Veto-only, so with no listener it can never return early.
+
+EntityEffectTickEvent - fires on every effect application tick for every entity carrying an
+effect, building a CraftEntity handle and converting the potion type each time. Veto-only.
+
+ServerTickStartEvent / ServerTickEndEvent - two allocations every tick, forever, on servers that
+mostly have no listener for either.
+
+PreCreatureSpawnEvent (EntityType#spawn), PreSpawnerSpawnEvent (BaseSpawner#serverTick) and
+PhantomPreSpawnEvent - each builds two or three Craft conversions plus an event per spawn attempt.
+All three are veto-only, and shouldAbortSpawn() is only read when the event was cancelled, which
+cannot happen with nothing listening.
+
+Worth recording: Leaf already guards the hottest PreCreatureSpawnEvent site itself, in
+NaturalSpawner#isValidSpawnPostitionForType, with the comment "Skip PreCreatureSpawnEvent if no
+listeners". These are the sites upstream did not cover, and upstream doing the same thing in the
+same way is good evidence the pattern is sound rather than a private trick.
