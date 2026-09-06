@@ -1,0 +1,24 @@
+Skip the entity-removal event when nothing is listening.
+
+CraftEventFactory#callEntityRemoveEvent sits in Entity#setRemoved - the single path every entity
+takes on its way out of the world. Mob deaths, item and XP orb despawns, projectiles expiring,
+entities dropped when a chunk unloads: all of it lands here.
+
+The method returns void, and getBukkitEntity() creates the CraftEntity wrapper when one does not
+exist yet, so with no listener registered this was allocating wrappers for entities that were
+already leaving. This project's own tuned config makes it hotter still - monsters despawn at 28/48,
+items and arrows at 15 seconds - so the removal rate is deliberately high.
+
+The listener check goes first, ahead of the existing player/null-cause/generation guards, so the
+common case exits immediately.
+
+--- a/paper-server/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
++++ b/paper-server/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
+@@ -2259,6 +2259,10 @@
+     public static void callEntityRemoveEvent(Entity entity, EntityRemoveEvent.Cause cause) {
++        if (EntityRemoveEvent.getHandlerList().getRegisteredListeners().length == 0) {
++            return;
++        }
+         if (entity instanceof ServerPlayer) {
+             return; // Don't call for player
+         }
