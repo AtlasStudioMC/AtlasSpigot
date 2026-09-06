@@ -301,6 +301,38 @@ python3 /path/to/source-patches/apply.py .
 
 Verified end to end on a clean clone: all thirteen groups applied, and the result compiled.
 
+### Held back: the pre-spawn event guards
+
+Three more sites were patched, verified to compile, and then **not shipped**:
+`EntityType#spawn` (`PreCreatureSpawnEvent`), `BaseSpawner#serverTick` (`PreSpawnerSpawnEvent`)
+and `PhantomSpawner` (`PhantomPreSpawnEvent`). All three are veto-only and follow the same pattern
+as the thirteen that did ship. Leaf itself already guards the hottest `PreCreatureSpawnEvent` site
+in `NaturalSpawner` with this exact approach, so the idea is not in dispute.
+
+They were held because of an observation I could not explain. Running the bench plugin, which
+force-loads a 441-chunk region synchronously at startup, the patched jar produced watchdog thread
+dumps more often than the unpatched one:
+
+| | run 1 | run 2 |
+|---|---|---|
+| without the spawn patches | 0 errors | 36 errors, 1 dump |
+| with them | 106 errors, 3 dumps | 150 errors, 3 dumps |
+
+The first comparison looked like a clean regression and was called one prematurely; the control's
+second run disproved that, since both jars produce dumps. There is also no exception involved —
+only the watchdog firing because the main thread waited over ten seconds on chunk generation, a
+path none of these three patches touch. Under normal operation, with no bench plugin, the patched
+jar boots clean with zero errors and saves correctly.
+
+So the likely reading is the same measurement noise documented in `benchmarks/results-26.2.txt`,
+where this machine drifted 76-122% across a session. But "likely noise" and "demonstrated safe"
+are different things, and these three sit on spawn-attempt paths rather than per-tick-per-entity
+ones, so the value is modest. Shipping an unexplained signal into other people's servers for a
+small win is not a trade worth making — the same standard that rejected settings elsewhere in this
+file for weaker reasons.
+
+They are recoverable from this commit's history if a machine with a stable clock ever settles it.
+
 ### Examined and rejected
 
 A tree-wide scan found 59 inline `new SomeEvent(...).callEvent()` sites across 44 distinct events.
