@@ -132,6 +132,24 @@ compatibility**.
 stock. Note Bukkit rewrites the file with its own header on first boot and strips any comments
 added to it, so the shipped copy carries none; the reasoning lives here instead.
 
+### Gale world config, previously unshipped
+
+The tuned bundle carried `atlas-global.yml`, `paper-global.yml` and `paper-world-defaults.yml` but
+no Gale files, so every Gale world setting was running at stock. `gale-world-defaults.yml` now
+ships with two changes:
+
+| Setting | From | To | What you give up |
+|---|---|---|---|
+| `entities-can-random-stroll-into-non-ticking-chunks` | true | false | Verified in `0067-Prevent-entities-random-strolling-into-non-ticking-c.patch`: `RandomStrollGoal` refuses a destination in a non-ticking chunk. Mobs at the edge of the ticking area stop wandering outward, so they no longer create activity in chunks nothing is simulating. |
+| `save-fireworks` | true | false | Firework rockets aren't persisted (`shouldBeSaved()` returns false), so any in flight vanish across a restart. Marginal, but free. |
+
+`gale-global.yml` ships unchanged and is left to generate at defaults — the only candidate there
+was `increase-time-statistics`, which is rejected below.
+
+The rest of Gale's defaults are already tuned by upstream: phantom and climbing-entity chunk loads
+are off, `check-stuck-in-wall` is already reduced to 10, projectile chunk loads are capped, and
+optimised sheep offspring colour is on.
+
 ### Still deliberately off
 
 - **`hopper.disable-move-event`** — the single biggest remaining win, and the only one held back
