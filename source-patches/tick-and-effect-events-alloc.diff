@@ -1,0 +1,47 @@
+Three more veto-only / notification-only events guarded on per-tick paths.
+
+1. EntityInsideBlockEvent - 24 call sites across the generated block classes, all byte-identical:
+
+     if (!new EntityInsideBlockEvent(entity.getBukkitEntity(), CraftBlock.at(level, pos)).callEvent()) { return; }
+
+   Each allocates a CraftBlock and an event, and entityInside runs per entity per tick for anything
+   standing in one of those blocks - bubble columns, cobwebs, berry bushes, fire, pressure plates,
+   cactus, campfires, crops, portals. In water-heavy or farm-heavy areas this is continuous. The
+   event can only veto, so with no listener the early return never happens.
+
+   Because the line is emitted into two dozen generated classes, apply.py handles this one as a
+   directory-wide replace with a minimum-hit assertion rather than a list of filenames, so it does
+   not rot when upstream adds or removes a block class.
+
+2. EntityEffectTickEvent - fires on every effect application tick for every entity carrying an
+   effect. Building it meant a getBukkitLivingEntity() lookup plus a
+   CraftPotionEffectType.minecraftHolderToBukkit() conversion. Veto-only, so with no listener the
+   condition reduces to the vanilla check either way. Note the site is already gated behind
+   shouldApplyEffectTickThisTick(), so this is per application rather than literally every tick.
+
+3. ServerTickStartEvent and ServerTickEndEvent - two allocations every tick, forever, on a server
+   with no listener for either. Small individually, but it is the one path guaranteed to run 20
+   times a second for the life of the process.
+
+   Verified functionally rather than by inspection: a plugin that listens to ServerTickEndEvent
+   (benchmarks/atlas-bench) still collects a full sample set against a patched jar, so the guard
+   does not suppress the event when something is actually listening.
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/level/block/*.java   (24 files)
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/level/block/*.java
+-        if (!new EntityInsideBlockEvent(entity.getBukkitEntity(), CraftBlock.at(level, pos)).callEvent()) { return; }
++        if (EntityInsideBlockEvent.getHandlerList().getRegisteredListeners().length != 0
++            && !new EntityInsideBlockEvent(entity.getBukkitEntity(), CraftBlock.at(level, pos)).callEvent()) { return; }
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/world/effect/MobEffectInstance.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/world/effect/MobEffectInstance.java
+-            && new EntityEffectTickEvent(target.getBukkitLivingEntity(), CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent()
++            && (EntityEffectTickEvent.getHandlerList().getRegisteredListeners().length == 0
++                || new EntityEffectTickEvent(target.getBukkitLivingEntity(), CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent())
+
+--- a/leaf-server/src/minecraft/java/net/minecraft/server/MinecraftServer.java
++++ b/leaf-server/src/minecraft/java/net/minecraft/server/MinecraftServer.java
++        if (ServerTickStartEvent.getHandlerList().getRegisteredListeners().length != 0)
+         new ServerTickStartEvent(this.tickCount+1).callEvent();
++        if (ServerTickEndEvent.getHandlerList().getRegisteredListeners().length != 0)
+         new ServerTickEndEvent(this.tickCount, ..., remaining).callEvent();

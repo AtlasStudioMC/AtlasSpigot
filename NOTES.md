@@ -219,13 +219,13 @@ dispatched it through the plugin manager to do nothing at all.
 `EntityJumpEvent` on every jump, an event whose only power is to veto. Mobs jump constantly while
 pathfinding, so this fires far more often than the name suggests.
 
-All ten follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
+All thirteen follow the same shape and the same rule: **resolve listener presence, and do no Bukkit
 work that nothing will read.** None changes behaviour when a listener is registered. Paper already does this in places, and checking first has now stopped three redundant patches:
 `EntityCollideWithEntityEvent` in `Entity#push(Entity)`, `BlockPhysicsEvent` behind
 `ServerLevel.hasPhysicsEvent`, and `PlayerUntrackEntityEvent` in `Entity` are all already guarded
 upstream. These seven are the spots it hadn't reached.
 
-None of the ten is measured. They are strictly-fewer-allocations changes and provably
+None of the thirteen is measured. They are strictly-fewer-allocations changes and provably
 equivalent, which is why they ship without numbers attached and aren't claimed to be large.
 
 **`chunk-tracking-events-alloc.diff`** — four sites on the chunk load/unload path, which is one
@@ -257,6 +257,28 @@ with no listener it was allocating wrappers for entities that were already leavi
 own config makes it hotter — monsters despawn at 28/48, items and arrows at 15 seconds — so the
 removal rate is deliberately high. The listener check goes ahead of the existing
 player/null-cause/generation guards so the common case exits immediately.
+
+**`tick-and-effect-events-alloc.diff`** — three groups, all on per-tick paths.
+
+`EntityInsideBlockEvent` has **24 byte-identical call sites** across the generated block classes,
+each allocating a `CraftBlock` and an event. `entityInside` runs per entity per tick for anything
+standing in a bubble column, cobweb, berry bush, fire, pressure plate, cactus, campfire, crop or
+portal — continuous in water-heavy or farm-heavy areas. Because the line is emitted into two dozen
+generated classes, `apply.py` handles it as a directory-wide replace with a minimum-hit assertion
+rather than a filename list, so it doesn't rot when upstream adds or removes a block class.
+
+`EntityEffectTickEvent` fires on every effect application for every entity carrying one, and
+building it meant a `getBukkitLivingEntity()` lookup plus a `minecraftHolderToBukkit()` conversion.
+The site is already gated behind `shouldApplyEffectTickThisTick()`, so this is per application
+rather than literally every tick.
+
+`ServerTickStartEvent` and `ServerTickEndEvent` are two allocations every tick, forever. Small
+individually, but it is the one path guaranteed to run 20 times a second for the life of the
+process.
+
+That last one got a functional test rather than just inspection: a plugin that *does* listen to
+`ServerTickEndEvent` (`benchmarks/atlas-bench`) still collects a full 200-sample set against the
+patched jar, proving the guard doesn't suppress the event when something is listening.
 
 ### Applying the patches
 
