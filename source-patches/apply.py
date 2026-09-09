@@ -176,23 +176,6 @@ patch(PS + "org/bukkit/craftbukkit/event/CraftEventFactory.java", [
      "        List<org.bukkit.entity.Entity> bukkitEntities"),
 ], "opt: item merge + chunk entity events")
 
-patch(MC + "world/effect/MobEffectInstance.java", [
-    ("            && new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent() // Paper - Add EntityEffectTickEvent",
-     "            // AtlasSpigot - veto-only, runs on every effect application tick\n"
-     "            && (io.papermc.paper.event.entity.EntityEffectTickEvent.getHandlerList().getRegisteredListeners().length == 0\n"
-     "                || new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent()) // Paper - Add EntityEffectTickEvent"),
-], "opt: potion effect tick event")
-
-patch(MC + "server/MinecraftServer.java", [
-    ("        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events",
-     "        // AtlasSpigot - two allocations every tick, forever\n"
-     "        if (com.destroystokyo.paper.event.server.ServerTickStartEvent.getHandlerList().getRegisteredListeners().length != 0)\n"
-     "        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events"),
-    ("        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();",
-     "        if (com.destroystokyo.paper.event.server.ServerTickEndEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
-     "        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();"),
-], "opt: server tick start/end events")
-
 patch(MC + "world/level/chunk/LevelChunk.java", [
     ("            org.bukkit.Chunk bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);\n"
      "            server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkLoadEvent(bukkitChunk, this.needsDecoration));",
@@ -246,6 +229,12 @@ def apply_bulk(root):
                 continue
             hits += t.count(old)
             f.write_text(t.replace(old, new))
+        if hits == 0:
+            # Already applied: the guarded form is present instead of the anchor.
+            guarded = sum(1 for f in d.rglob("*.java") if new.split("\n")[0].strip() in f.read_text())
+            if guarded >= minimum:
+                print(f"  already applied: {label} ({guarded} sites)")
+                continue
         if hits < minimum:
             print(f"  FAILED: {label} - matched {hits} sites, expected at least {minimum}")
             ok = False
@@ -312,9 +301,14 @@ def main():
             failed.append(f"{label}: file missing -> {rel}")
             continue
         s = f.read_text()
+        # Idempotency is decided per GROUP, before touching anything. Some anchors survive their
+        # own patch (the equipment one keys off a `for` line that is still there afterwards), so a
+        # per-pair check would happily apply the group a second time and produce duplicate
+        # declarations. If the first replacement's exact text is already present, the group is done.
+        if pairs and pairs[0][1] in s:
+            print(f"  already applied: {label}")
+            continue
         for old, new in pairs:
-            if new.split("\n")[0].strip() and new[:40] in s:
-                pass  # tolerate re-running; the assert below is the real check
             if old not in s:
                 failed.append(f"{label}: anchor not found in {rel}\n    {old.splitlines()[0][:90]}")
                 break
