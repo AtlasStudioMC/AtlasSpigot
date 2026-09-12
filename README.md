@@ -6,10 +6,10 @@
 [![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.8%20%7C%201.21.7%20%7C%201.21.6%20%7C%201.21.5%20%7C%201.21.4%20%7C%201.21.3%20%7C%201.21.1%20%7C%201.21%20%7C%201.20.6%20%7C%201.20.4%20%7C%201.20.2%20%7C%201.20.1%20%7C%201.20-blueviolet)](https://github.com/PurpurMC/Purpur)
 [![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
-**[atlasgames.aa.am](https://atlasgames.aa.am)** &nbsp;·&nbsp;
-[Downloads](https://atlasgames.aa.am/downloads) &nbsp;·&nbsp;
-[Benchmarks](https://atlasgames.aa.am/benchmarks) &nbsp;·&nbsp;
-[Docs](https://atlasgames.aa.am/docs)
+**[atlasstudio.c0m.to](https://atlasstudio.c0m.to)** &nbsp;·&nbsp;
+[Downloads](https://atlasstudio.c0m.to/downloads) &nbsp;·&nbsp;
+[Benchmarks](https://atlasstudio.c0m.to/benchmarks) &nbsp;·&nbsp;
+[Docs](https://atlasstudio.c0m.to/docs)
 
 A free, tuned Minecraft server jar built on [Purpur](https://github.com/PurpurMC/Purpur) and
 [Leaf](https://github.com/Winds-Studio/Leaf) - one build philosophy across every supported
@@ -48,7 +48,7 @@ backed by an actual [`LICENSE.md`](LICENSE.md), and a live [bStats](#statistics)
 
 Every Minecraft version is its own track, with its own tag prefix on the
 [**Releases**](../../releases) page and its own folder for config + source-patches. The website's
-[downloads page](https://atlasgames.aa.am/downloads) shows the full lineup and what's
+[downloads page](https://atlasstudio.c0m.to/downloads) shows the full lineup and what's
 actually shipped vs still planned; here's what's released right now:
 
 The 26.2 line is called **Astra**. That is the name the jar reports in the F3 screen and in
