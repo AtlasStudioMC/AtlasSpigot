@@ -15,11 +15,11 @@ Behaviour is unchanged when a listener exists: the event is built, fired, and bo
 +++ b/leaf-server/src/minecraft/java/net/minecraft/world/entity/Entity.java
 @@ -4026,6 +4026,16 @@
      public void setAirSupply(final int supply) {
-+        // Atlas start - fast path when the event cannot change anything
++        // Astra start - fast path when the event cannot change anything
 +        if (!this.valid || org.bukkit.event.entity.EntityAirChangeEvent.getHandlerList().getRegisteredListeners().length == 0) {
 +            this.entityData.set(DATA_AIR_SUPPLY_ID, supply);
 +            return;
 +        }
-+        // Atlas end
++        // Astra end
          // CraftBukkit start
          org.bukkit.event.entity.EntityAirChangeEvent event = new org.bukkit.event.entity.EntityAirChangeEvent(this.getBukkitEntity(), supply);

@@ -51,24 +51,31 @@ Every Minecraft version is its own track, with its own tag prefix on the
 [downloads page](https://atlasstudiomc.vercel.app/downloads) shows the full lineup and what's
 actually shipped vs still planned; here's what's released right now:
 
+The 26.2 line is called **Astra**. That is the name the jar reports in the F3 screen and in
+`/version`; every other version stays Atlas. Its config files are still `atlas-global.yml`,
+`atlas-world-defaults.yml` and `atlas.yml` on purpose - Leaf's config loader has no fallback
+chain, so renaming them would make every existing 26.2 server regenerate defaults on upgrade and
+silently throw away its tuning. Releases published before the rename are named and tagged
+`atlasspigot-26.2-N`; renaming a tag would break the download links already in circulation.
+
 | Minecraft | Built on | Tag prefix | Config/patches |
 |---|---|---|---|
-| 26.2 | Leaf | `atlas-26.2-N` | repo root |
-| 26.1.2 | Leaf | `atlas-26.1.2-N` | [`26.1.2/`](26.1.2/) |
-| 1.21.11 | Leaf | `atlas-1.21.11-N` | [`1.21.11/`](1.21.11/) ([notes](1.21.11/NOTES.md)) |
-| 1.21.8 | Leaf | `atlas-1.21.8-N` | [`1.21.8/`](1.21.8/) ([notes](1.21.8/NOTES.md)) |
-| 1.21.7 | Leaf | `atlas-1.21.7-N` | [`1.21.7/`](1.21.7/) ([notes](1.21.7/NOTES.md)) |
-| 1.21.6 | Leaf | `atlas-1.21.6-N` | [`1.21.6/`](1.21.6/) ([notes](1.21.6/NOTES.md)) |
-| 1.21.5 | Leaf | `atlas-1.21.5-N` | [`1.21.5/`](1.21.5/) ([notes](1.21.5/NOTES.md)) |
-| 1.21.4 | Leaf | `atlas-1.21.4-N` | [`1.21.4/`](1.21.4/) ([notes](1.21.4/NOTES.md)) |
-| 1.21.3 | Purpur | `atlas-1.21.3-N` | [`1.21.3/`](1.21.3/) ([notes](1.21.3/NOTES.md)) |
-| 1.21.1 | Purpur | `atlas-1.21.1-N` | [`1.21.1/`](1.21.1/) ([notes](1.21.1/NOTES.md)) |
-| 1.21 | Purpur | `atlas-1.21-N` | [`1.21/`](1.21/) ([notes](1.21/NOTES.md)) |
-| 1.20.6 | Purpur | `atlas-1.20.6-N` | [`1.20.6/`](1.20.6/) ([notes](1.20.6/NOTES.md)) |
-| 1.20.4 | Purpur | `atlas-1.20.4-N` | [`1.20.4/`](1.20.4/) ([notes](1.20.4/NOTES.md)) |
-| 1.20.2 | Purpur | `atlas-1.20.2-N` | [`1.20.2/`](1.20.2/) ([notes](1.20.2/NOTES.md)) |
-| 1.20.1 | Purpur | `atlas-1.20.1-N` | [`1.20.1/`](1.20.1/) ([notes](1.20.1/NOTES.md)) |
-| 1.20 | Purpur | `atlas-1.20-N` | [`1.20/`](1.20/) ([notes](1.20/NOTES.md)) |
+| 26.2 (**Astra**) | Leaf | `astra-26.2-N` | repo root |
+| 26.1.2 | Leaf | `atlasspigot-26.1.2-N` | [`26.1.2/`](26.1.2/) |
+| 1.21.11 | Leaf | `atlasspigot-1.21.11-N` | [`1.21.11/`](1.21.11/) ([notes](1.21.11/NOTES.md)) |
+| 1.21.8 | Leaf | `atlasspigot-1.21.8-N` | [`1.21.8/`](1.21.8/) ([notes](1.21.8/NOTES.md)) |
+| 1.21.7 | Leaf | `atlasspigot-1.21.7-N` | [`1.21.7/`](1.21.7/) ([notes](1.21.7/NOTES.md)) |
+| 1.21.6 | Leaf | `atlasspigot-1.21.6-N` | [`1.21.6/`](1.21.6/) ([notes](1.21.6/NOTES.md)) |
+| 1.21.5 | Leaf | `atlasspigot-1.21.5-N` | [`1.21.5/`](1.21.5/) ([notes](1.21.5/NOTES.md)) |
+| 1.21.4 | Leaf | `atlasspigot-1.21.4-N` | [`1.21.4/`](1.21.4/) ([notes](1.21.4/NOTES.md)) |
+| 1.21.3 | Purpur | `atlasspigot-1.21.3-N` | [`1.21.3/`](1.21.3/) ([notes](1.21.3/NOTES.md)) |
+| 1.21.1 | Purpur | `atlasspigot-1.21.1-N` | [`1.21.1/`](1.21.1/) ([notes](1.21.1/NOTES.md)) |
+| 1.21 | Purpur | `atlasspigot-1.21-N` | [`1.21/`](1.21/) ([notes](1.21/NOTES.md)) |
+| 1.20.6 | Purpur | `atlasspigot-1.20.6-N` | [`1.20.6/`](1.20.6/) ([notes](1.20.6/NOTES.md)) |
+| 1.20.4 | Purpur | `atlasspigot-1.20.4-N` | [`1.20.4/`](1.20.4/) ([notes](1.20.4/NOTES.md)) |
+| 1.20.2 | Purpur | `atlasspigot-1.20.2-N` | [`1.20.2/`](1.20.2/) ([notes](1.20.2/NOTES.md)) |
+| 1.20.1 | Purpur | `atlasspigot-1.20.1-N` | [`1.20.1/`](1.20.1/) ([notes](1.20.1/NOTES.md)) |
+| 1.20 | Purpur | `atlasspigot-1.20-N` | [`1.20/`](1.20/) ([notes](1.20/NOTES.md)) |
 
 A new release ships for every change on whichever track it applies to, so the top of each tag
 prefix's history is always that track's current build. Same tuning philosophy on every track - a
@@ -91,7 +98,7 @@ Paper/Spigot directly, and why - is in [`ROADMAP.md`](ROADMAP.md).
    ./start.sh
    ```
 
-   (or `java -jar Atlas-26.2.jar nogui` directly — `start.sh` just adds the JVM tuning below)
+   (or `java -jar Astra-26.2.jar nogui` directly — `start.sh` just adds the JVM tuning below)
 
 **Running on a hosting panel** (Pterodactyl, Spaceify, etc.)? Panels generate their own startup
 command and ignore `start.sh` entirely, which means the JVM tuning below never applies unless you

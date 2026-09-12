@@ -20,6 +20,20 @@ MEMORY="8G"
 # part of Aikar's flags and was missing here. On a busy disk those writes stall at a
 # safepoint and surface as GC latency. Cost: jps/jstat can no longer see this JVM via its
 # shared-memory file, so attach by PID if you profile.
+
+# The jar name has changed across releases: AtlasSpigot-26.2.jar, then Atlas-26.2.jar, and from
+# the next build Astra-26.2.jar. Resolve whichever one is actually here instead of hardcoding a
+# single name and breaking the other two. Override with JAR=/path/to/server.jar if you renamed it.
+if [ -z "${JAR:-}" ]; then
+  for candidate in Astra-26.2.jar Atlas-26.2.jar AtlasSpigot-26.2.jar; do
+    if [ -f "$candidate" ]; then JAR="$candidate"; break; fi
+  done
+fi
+if [ -z "${JAR:-}" ]; then
+  echo "No server jar found in $(pwd)." >&2
+  echo "Expected Astra-26.2.jar, Atlas-26.2.jar or AtlasSpigot-26.2.jar, or set JAR=/path/to/server.jar" >&2
+  exit 1
+fi
 java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:+UseG1GC \
   -XX:+ParallelRefProcEnabled \
@@ -40,4 +54,4 @@ java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:MaxTenuringThreshold=1 \
   -Dusing.aikars.flags=https://mcflags.emc.gs \
   -Daikars.new.flags=true \
-  -jar Atlas-26.2.jar nogui
+  -jar "$JAR" nogui

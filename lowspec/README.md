@@ -1,6 +1,6 @@
 # Low-spec profile
 
-A configuration for Atlas 26.2 sized for a genuinely small machine: around **3GB of RAM**, an
+A configuration for Astra 26.2 sized for a genuinely small machine: around **3GB of RAM**, an
 older CPU already sitting near 100% thread usage, roughly **10GB of disk**, and a heavy plugin set
 (~45).
 
@@ -9,7 +9,7 @@ density for tick time, deliberately and everywhere.
 
 ## Use it
 
-Copy everything in this folder next to `Atlas-26.2.jar`, set `eula=true`, then `./start.sh`.
+Copy everything in this folder next to `Astra-26.2.jar`, set `eula=true`, then `./start.sh`.
 
 ## The heap is the thing to get right
 

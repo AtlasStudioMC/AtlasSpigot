@@ -11,7 +11,7 @@ from ItemEntity#mergeWithNeighbours, which itself runs from the item's tick.
 +++ b/paper-server/src/main/java/org/bukkit/craftbukkit/event/CraftEventFactory.java
 @@ -843,6 +843,10 @@
      public static boolean callItemMergeEvent(ItemEntity merging, ItemEntity mergingWith) {
-+        // Atlas - the event can only veto; with no listener the answer is always true
++        // Astra - the event can only veto; with no listener the answer is always true
 +        if (ItemMergeEvent.getHandlerList().getRegisteredListeners().length == 0) {
 +            return true;
 +        }

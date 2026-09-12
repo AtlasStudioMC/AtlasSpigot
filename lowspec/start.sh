@@ -1,5 +1,5 @@
 #!/bin/bash
-# Atlas 26.2 - low-spec profile
+# Astra 26.2 - low-spec profile
 #
 # Sized for roughly 3GB total RAM, an older CPU that is already near 100% thread usage,
 # and ~10GB of disk.
@@ -21,6 +21,20 @@ MEMORY="1600M"
 
 # G1HeapRegionSize is 4M rather than the usual 8M. G1 wants somewhere near 2048 regions
 # to balance well; at a 1600M heap, 8M regions would give it only ~200 to work with.
+
+# The jar name has changed across releases: AtlasSpigot-26.2.jar, then Atlas-26.2.jar, and from
+# the next build Astra-26.2.jar. Resolve whichever one is actually here instead of hardcoding a
+# single name and breaking the other two. Override with JAR=/path/to/server.jar if you renamed it.
+if [ -z "${JAR:-}" ]; then
+  for candidate in Astra-26.2.jar Atlas-26.2.jar AtlasSpigot-26.2.jar; do
+    if [ -f "$candidate" ]; then JAR="$candidate"; break; fi
+  done
+fi
+if [ -z "${JAR:-}" ]; then
+  echo "No server jar found in $(pwd)." >&2
+  echo "Expected Astra-26.2.jar, Atlas-26.2.jar or AtlasSpigot-26.2.jar, or set JAR=/path/to/server.jar" >&2
+  exit 1
+fi
 java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:+UseG1GC \
   -XX:+ParallelRefProcEnabled \
@@ -41,4 +55,4 @@ java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:MaxTenuringThreshold=1 \
   -Dusing.aikars.flags=https://mcflags.emc.gs \
   -Daikars.new.flags=true \
-  -jar Atlas-26.2.jar nogui
+  -jar "$JAR" nogui
