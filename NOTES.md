@@ -169,6 +169,28 @@ optimised sheep offspring colour is on.
   turning on deliberately if you have checked your plugin list and ProtocolLib is not in it —
   it needs a restart, not a reload.
 
+### `network-compression-threshold`: 64 → 256
+
+The only setting in the whole config that had never been justified anywhere. It was written in
+the very first commit (`Initial AtlasSpigot config layer on Leaf 26.2`) and not revisited since,
+and unlike everything else here it had no entry in these notes.
+
+At `64` almost every packet the server sends gets zlib-compressed, because almost every packet is
+larger than 64 bytes. Compression is not free in either direction: the server spends CPU
+compressing before the packet can go out, and the client spends CPU decompressing. On small
+packets the ratio is poor, so that cost buys very little. Multiply it by player count and it is
+real work on the path that carries movement and entity updates.
+
+`256` is Paper's own default. The strongest argument for the change is internal: **the low-spec
+profile — the one deliberately tuned for "an old processor" — already sets `512`.** When this
+project actually sat down and thought about CPU cost, it went far in the other direction. The
+main profile sitting at `64` was inconsistent with that, not a considered choice.
+
+Lower it back toward `64` if your bottleneck is bandwidth rather than CPU — a host with a tight
+data cap or a saturated uplink genuinely wants more compression, and that is the trade being made
+here. Verified only that the server boots clean with it (`Done (32.319s)!` on the build 27 jar);
+no throughput or ping measurement was taken, so none is claimed.
+
 ### Already on, on the network path
 
 Listed because they are easy to miss when looking for something left to tune — these are set and
