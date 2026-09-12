@@ -5,7 +5,7 @@
      @Override
      public String getName() {
 -        return this.serverName;
-+        return org.dreeam.leaf.config.modules.misc.ServerBrand.serverModName; // AtlasSpigot - keep consistent with the configurable brand used for getServerModName()/BrandPayload instead of the raw build-info name
++        return org.dreeam.leaf.config.modules.misc.ServerBrand.serverModName; // Atlas - keep consistent with the configurable brand used for getServerModName()/BrandPayload instead of the raw build-info name
      }
  
      @Override

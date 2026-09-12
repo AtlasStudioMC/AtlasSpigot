@@ -65,10 +65,10 @@ identically, including the `@Experimental`-tagged modules.
 
 ## Verified
 
-Boot-tested with the **released** `AtlasSpigot-26.1.2.jar` rather than a local build, since config
+Boot-tested with the **released** `Atlas-26.1.2.jar` rather than a local build, since config
 is read at runtime and that's what users actually run:
 
-- Booted clean on Java 25 in 13.07s, brand string `AtlasSpigot version 26.1.2-DEV-ver/26.1.2@3c591d7`.
+- Booted clean on Java 25 in 13.07s, brand string `Atlas version 26.1.2-DEV-ver/26.1.2@3c591d7`.
 - The config after the server wrote it back is **byte-identical** to the one supplied — none of the
   six changes were silently overridden or rejected.
 - No warnings relating to biome caching, virtual threads or the combat tracker in the log.

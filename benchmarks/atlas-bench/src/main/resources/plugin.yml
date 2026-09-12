@@ -1,4 +1,4 @@
 name: AtlasBench
 version: 1.0
-main: net.atlasspigot.bench.AtlasBench
+main: net.atlas.bench.AtlasBench
 api-version: '1.21'

@@ -17,7 +17,7 @@ limit ahead of time, and adds the same Aikar's-flags G1GC tuning from
 
 (`{{SERVER_JARFILE}}` is Pterodactyl-style templating for whatever the jar is
 named on that panel - replace with the literal filename, e.g.
-`AtlasSpigot-26.2.jar`, if your panel doesn't support that placeholder.)
+`Atlas-26.2.jar`, if your panel doesn't support that placeholder.)
 
 Left out on purpose: `-XX:+AlwaysPreTouch` (roughly doubles startup time to
 pre-commit the whole heap upfront - not worth it, same reasoning as `start.sh`).

@@ -323,8 +323,8 @@ misc:
     # <detail>, shows detail of the command exception.
     unknown-command: default
   rebrand:
-    server-mod-name: AtlasSpigot
-    server-gui-name: AtlasSpigot Console
+    server-mod-name: Atlas
+    server-gui-name: Atlas Console
   sentry:
     # Sentry DSN for improved error logging, leave blank to disable,
     # Obtain from https://sentry.io/

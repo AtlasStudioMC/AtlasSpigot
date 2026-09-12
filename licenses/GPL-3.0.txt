@@ -1,5 +1,5 @@
 Below is the GNU General Public License, version 3 (GPL-3.0-only),
-which applies only to parts of Leaf (that AtlasSpigot is built on) or this repository's own additions that are specifically and explicitly released under GPL-3.0-only.
+which applies only to parts of Leaf (that Atlas is built on) or this repository's own additions that are specifically and explicitly released under GPL-3.0-only.
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

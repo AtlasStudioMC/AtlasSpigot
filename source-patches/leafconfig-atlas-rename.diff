@@ -5,13 +5,13 @@
      protected static final String CONFIG_MODULE_PACKAGE = "org.dreeam.leaf.config.modules";
 -    protected static final String GLOBAL_CONFIG_FILE = "leaf-global.yml";
 -    protected static final String DEFAULT_WORLD_CONFIG_FILE = "leaf-world-defaults.yml"; // Leaf TODO - Per world config
-+    protected static final String GLOBAL_CONFIG_FILE = "atlas-global.yml"; // AtlasSpigot - renamed from leaf-global.yml
-+    protected static final String DEFAULT_WORLD_CONFIG_FILE = "atlas-world-defaults.yml"; // Leaf TODO - Per world config // AtlasSpigot - renamed from leaf-world-defaults.yml
++    protected static final String GLOBAL_CONFIG_FILE = "atlas-global.yml"; // Atlas - renamed from leaf-global.yml
++    protected static final String DEFAULT_WORLD_CONFIG_FILE = "atlas-world-defaults.yml"; // Leaf TODO - Per world config // Atlas - renamed from leaf-world-defaults.yml
 @@ -231,7 +231,7 @@
      private static List<String> buildSparkExtraConfigs() {
          List<String> extraConfigs = new ArrayList<>(Arrays.asList(
 -            "config/leaf-global.yml",
-+            CONFIG_DIRECTORY.getName() + "/" + GLOBAL_CONFIG_FILE, // AtlasSpigot - use the renamed constant instead of a stale hardcoded path
++            CONFIG_DIRECTORY.getName() + "/" + GLOBAL_CONFIG_FILE, // Atlas - use the renamed constant instead of a stale hardcoded path
              "config/gale-global.yml",
              "config/gale-world-defaults.yml"
          ));
@@ -23,6 +23,6 @@
          } catch (IOException ignore) {
          } catch (InvalidConfigurationException ex) {
 -            Bukkit.getLogger().log(Level.SEVERE, "Could not load purpur.yml, please correct your syntax errors", ex);
-+            Bukkit.getLogger().log(Level.SEVERE, "Could not load atlas.yml, please correct your syntax errors", ex); // AtlasSpigot - renamed from purpur.yml
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load atlas.yml, please correct your syntax errors", ex); // Atlas - renamed from purpur.yml
              throw Throwables.propagate(ex);
          }

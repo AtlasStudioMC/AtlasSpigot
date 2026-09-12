@@ -12,7 +12,7 @@ verbose: false
 settings:
   use-alternate-keepalive: false
   tps-catchup: true
-  server-mod-name: AtlasSpigot
+  server-mod-name: Atlas
   disable-give-dropping: false
   fix-projectile-looting-transfer: false
   player-deaths-always-show-item: false

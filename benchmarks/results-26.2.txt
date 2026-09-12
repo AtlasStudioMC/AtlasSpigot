@@ -1,7 +1,7 @@
-AtlasSpigot 26.2 (build 21) vs Paper 26.2 (build 121) - MSPT under entity load
+Atlas 26.2 (build 21) vs Paper 26.2 (build 121) - MSPT under entity load
 ==============================================================================
 
-VERDICT: INCONCLUSIVE. AtlasSpigot measured faster on average, but the run-to-run
+VERDICT: INCONCLUSIVE. Atlas measured faster on average, but the run-to-run
 noise on this hardware is larger than the difference, so no number is claimed from
 this data. Details below.
 
@@ -12,9 +12,9 @@ Test environment
   Plugin        benchmarks/atlas-bench, 300 entities, fixed spawn seed 12345
   Window        140 tick warmup, then 400 consecutive ticks sampled via ServerTickEndEvent
   Paper build   paper-26.2-121, sha256 0de30efb024bc8b83c9c7d507d11802897ad8056b6110ec09fe1a91d126ccb54
-  Atlas build   atlasspigot-26.2-21 (7 optimisation patches + maximum tuning config)
+  Atlas build   atlas-26.2-21 (7 optimisation patches + maximum tuning config)
   Design        8 runs total, alternating P,A,P,A,... so drift hits both sides equally
-  Configs       AtlasSpigot ran this project's shipped tuned config; Paper ran its own
+  Configs       Atlas ran this project's shipped tuned config; Paper ran its own
                 untouched defaults. So this compares the products as shipped, not the
                 jars in isolation.
 
@@ -28,7 +28,7 @@ Raw results (avg MSPT, lower is better)
     pair 3   P 15.58   A 14.50    +1.08  (Atlas faster)
     pair 4   P 17.95   A 11.19    +6.76  (Atlas faster)
 
-  Mean difference  +2.21 MSPT, i.e. 16.8% in AtlasSpigot's favour
+  Mean difference  +2.21 MSPT, i.e. 16.8% in Atlas's favour
   Pooled sd         3.67 MSPT
   Effect / noise    0.60
 
@@ -38,7 +38,7 @@ Why this is inconclusive
   5.03-14.50). One of four pairs favours Paper outright.
 
   The dominant signal is not the software, it is thermal throttling. Over the session
-  Paper degraded 10.18 -> 17.95 (+76%) and AtlasSpigot 5.03 -> 11.19 (+122%) purely as a
+  Paper degraded 10.18 -> 17.95 (+76%) and Atlas 5.03 -> 11.19 (+122%) purely as a
   function of run order. A fanless-class laptop cannot hold a steady clock through eight
   consecutive 4GB Minecraft servers, and no amount of alternating fixes that - it only
   stops the drift from being mistaken for a win by one side.
@@ -49,5 +49,5 @@ Why this is inconclusive
 
 What would fix it
   Dedicated hardware with a stable clock - a desktop or a bare-metal server, not a
-  laptop - and more runs per side. Until then, AtlasSpigot's 26.2 performance is
+  laptop - and more runs per side. Until then, Atlas's 26.2 performance is
   genuinely unmeasured, and nothing on the website claims otherwise.

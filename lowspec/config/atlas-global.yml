@@ -385,8 +385,8 @@ misc:
     # Only log with a Throwable will be recorded after enabling this.
     only-log-thrown: true
   rebrand:
-    server-mod-name: AtlasSpigot
-    server-gui-name: AtlasSpigot Console
+    server-mod-name: Atlas
+    server-gui-name: Atlas Console
   message:
     # Unknown command message, using MiniMessage format, set to "default" to use vanilla message,
     # placeholder:

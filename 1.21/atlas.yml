@@ -85,7 +85,7 @@ settings:
     death-message:
       run-with-scissors: <player> slipped and fell on their shears
       stonecutter: <player> has sawed themself in half
-  server-mod-name: AtlasSpigot
+  server-mod-name: Atlas
   bee-count-payload: false
   tps-catchup: true
   clamp-attributes: true

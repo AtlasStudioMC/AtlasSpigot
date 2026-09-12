@@ -5,7 +5,7 @@
      @Override
      public String getName() {
 -        return this.serverName;
-+        return org.purpurmc.purpur.PurpurConfig.serverModName; // AtlasSpigot - keep consistent with the configurable brand used for getServerModName() instead of the raw build-info name
++        return org.purpurmc.purpur.PurpurConfig.serverModName; // Atlas - keep consistent with the configurable brand used for getServerModName() instead of the raw build-info name
      }
  
      @Override

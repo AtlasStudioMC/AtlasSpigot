@@ -40,4 +40,4 @@ java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:MaxTenuringThreshold=1 \
   -Dusing.aikars.flags=https://mcflags.emc.gs \
   -Daikars.new.flags=true \
-  -jar AtlasSpigot-26.1.2.jar nogui
+  -jar Atlas-26.1.2.jar nogui

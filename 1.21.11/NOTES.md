@@ -65,6 +65,6 @@ the config — still bounded, leak still fixed.
 ## Verified
 
 Booted with the full tuned config: config loaded clean, no exceptions, brand string reads
-`AtlasSpigot version 1.21.11-DEV-ver/1.21.11@762f884`, the renames produced `config/atlas-global.yml`
+`Atlas version 1.21.11-DEV-ver/1.21.11@762f884`, the renames produced `config/atlas-global.yml`
 and `atlas.yml` (not the Leaf/Purpur names), every changed setting survived the server writing the
 config back (byte-identical diff, no silent overrides), and shutdown was clean.

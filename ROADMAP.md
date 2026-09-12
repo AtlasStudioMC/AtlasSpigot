@@ -1,9 +1,9 @@
 # Roadmap
 
-AtlasSpigot currently covers current versions down through 1.20, using whichever real upstream
+Atlas currently covers current versions down through 1.20, using whichever real upstream
 project actually has buildable source for that version.
 
-- **Leaf** - current versions. AtlasSpigot's primary base; most tuning here is Leaf's own config
+- **Leaf** - current versions. Atlas's primary base; most tuning here is Leaf's own config
   modules directly.
 - **Purpur** - 1.21.3 down through 1.20, where Leaf's own branches stop. Purpur's branches go
   back further still ([verified live](https://github.com/PurpurMC/Purpur/branches) to 1.15), but

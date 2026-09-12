@@ -5,7 +5,7 @@
                      .withRequiredArg()
                      .ofType(File.class)
 -                    .defaultsTo(new File("purpur.yml"))
-+                    .defaultsTo(new File("atlas.yml")) // AtlasSpigot - renamed from purpur.yml
++                    .defaultsTo(new File("atlas.yml")) // Atlas - renamed from purpur.yml
                      .describedAs("Yml file");
                  // Purpur end
  

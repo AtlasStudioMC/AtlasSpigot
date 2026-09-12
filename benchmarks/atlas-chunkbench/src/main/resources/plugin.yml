@@ -1,4 +1,4 @@
 name: AtlasChunkBench
 version: 1.0
-main: net.atlasspigot.bench.AtlasChunkBench
+main: net.atlas.bench.AtlasChunkBench
 api-version: '1.21'

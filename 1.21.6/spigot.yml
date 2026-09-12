@@ -110,7 +110,7 @@ world-settings:
       villagers-active-for-panic: true
       tick-inactive-villagers: true
       ignore-spectators: false
-    # AtlasSpigot - halved from this version's own stock defaults, not copied from another track
+    # Atlas - halved from this version's own stock defaults, not copied from another track
     entity-tracking-range:
       players: 64
       animals: 48

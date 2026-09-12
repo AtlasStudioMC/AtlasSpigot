@@ -5,7 +5,7 @@
          } catch (IOException ignore) {
          } catch (InvalidConfigurationException ex) {
 -            Bukkit.getLogger().log(Level.SEVERE, "Could not load purpur.yml, please correct your syntax errors", ex);
-+            Bukkit.getLogger().log(Level.SEVERE, "Could not load atlas.yml, please correct your syntax errors", ex); // AtlasSpigot - renamed from purpur.yml
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load atlas.yml, please correct your syntax errors", ex); // Atlas - renamed from purpur.yml
              throw Throwables.propagate(ex);
          }
          config.options().header(HEADER);

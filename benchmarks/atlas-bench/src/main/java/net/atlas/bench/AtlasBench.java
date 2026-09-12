@@ -1,4 +1,4 @@
-package net.atlasspigot.bench;
+package net.atlas.bench;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import org.bukkit.Bukkit;

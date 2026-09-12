@@ -108,7 +108,7 @@ world-settings:
       villagers-active-for-panic: true
       tick-inactive-villagers: true
       ignore-spectators: false
-    # AtlasSpigot - halved from this version's own stock defaults (128/96/96/96/128/64), not
+    # Atlas - halved from this version's own stock defaults (128/96/96/96/128/64), not
     # copied from the 26.2 build's numbers - this Leaf branch's stock baseline is higher, so
     # matching the 26.2 track's absolute values would've been a different relative cut.
     entity-tracking-range:

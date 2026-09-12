@@ -1,6 +1,6 @@
 <div align="center">
 
-## AtlasSpigot
+## Atlas
 
 [![License](https://img.shields.io/badge/license-mixed%20(MIT%2FGPL--3.0)-blue?logo=github)](LICENSE.md)
 [![Minecraft](https://img.shields.io/badge/minecraft-26.2%20%7C%2026.1.2%20%7C%201.21.11%20%7C%201.21.8%20%7C%201.21.7%20%7C%201.21.6%20%7C%201.21.5%20%7C%201.21.4%20%7C%201.21.3%20%7C%201.21.1%20%7C%201.21%20%7C%201.20.6%20%7C%201.20.4%20%7C%201.20.2%20%7C%201.20.1%20%7C%201.20-blueviolet)](https://github.com/PurpurMC/Purpur)
@@ -17,7 +17,7 @@ Minecraft version.
 
 </div>
 
-AtlasSpigot isn't a fork from scratch: each version is Paper, Purpur, or Leaf (whichever one
+Atlas isn't a fork from scratch: each version is Paper, Purpur, or Leaf (whichever one
 actually has buildable source for that Minecraft version - see [`ROADMAP.md`](ROADMAP.md)),
 source-rebuilt with a real brand change baked into the jar itself (not just a config overlay) and a
 set of scale/resource tuning changes layered on top, each checked against that version's own
@@ -53,22 +53,22 @@ actually shipped vs still planned; here's what's released right now:
 
 | Minecraft | Built on | Tag prefix | Config/patches |
 |---|---|---|---|
-| 26.2 | Leaf | `atlasspigot-26.2-N` | repo root |
-| 26.1.2 | Leaf | `atlasspigot-26.1.2-N` | [`26.1.2/`](26.1.2/) |
-| 1.21.11 | Leaf | `atlasspigot-1.21.11-N` | [`1.21.11/`](1.21.11/) ([notes](1.21.11/NOTES.md)) |
-| 1.21.8 | Leaf | `atlasspigot-1.21.8-N` | [`1.21.8/`](1.21.8/) ([notes](1.21.8/NOTES.md)) |
-| 1.21.7 | Leaf | `atlasspigot-1.21.7-N` | [`1.21.7/`](1.21.7/) ([notes](1.21.7/NOTES.md)) |
-| 1.21.6 | Leaf | `atlasspigot-1.21.6-N` | [`1.21.6/`](1.21.6/) ([notes](1.21.6/NOTES.md)) |
-| 1.21.5 | Leaf | `atlasspigot-1.21.5-N` | [`1.21.5/`](1.21.5/) ([notes](1.21.5/NOTES.md)) |
-| 1.21.4 | Leaf | `atlasspigot-1.21.4-N` | [`1.21.4/`](1.21.4/) ([notes](1.21.4/NOTES.md)) |
-| 1.21.3 | Purpur | `atlasspigot-1.21.3-N` | [`1.21.3/`](1.21.3/) ([notes](1.21.3/NOTES.md)) |
-| 1.21.1 | Purpur | `atlasspigot-1.21.1-N` | [`1.21.1/`](1.21.1/) ([notes](1.21.1/NOTES.md)) |
-| 1.21 | Purpur | `atlasspigot-1.21-N` | [`1.21/`](1.21/) ([notes](1.21/NOTES.md)) |
-| 1.20.6 | Purpur | `atlasspigot-1.20.6-N` | [`1.20.6/`](1.20.6/) ([notes](1.20.6/NOTES.md)) |
-| 1.20.4 | Purpur | `atlasspigot-1.20.4-N` | [`1.20.4/`](1.20.4/) ([notes](1.20.4/NOTES.md)) |
-| 1.20.2 | Purpur | `atlasspigot-1.20.2-N` | [`1.20.2/`](1.20.2/) ([notes](1.20.2/NOTES.md)) |
-| 1.20.1 | Purpur | `atlasspigot-1.20.1-N` | [`1.20.1/`](1.20.1/) ([notes](1.20.1/NOTES.md)) |
-| 1.20 | Purpur | `atlasspigot-1.20-N` | [`1.20/`](1.20/) ([notes](1.20/NOTES.md)) |
+| 26.2 | Leaf | `atlas-26.2-N` | repo root |
+| 26.1.2 | Leaf | `atlas-26.1.2-N` | [`26.1.2/`](26.1.2/) |
+| 1.21.11 | Leaf | `atlas-1.21.11-N` | [`1.21.11/`](1.21.11/) ([notes](1.21.11/NOTES.md)) |
+| 1.21.8 | Leaf | `atlas-1.21.8-N` | [`1.21.8/`](1.21.8/) ([notes](1.21.8/NOTES.md)) |
+| 1.21.7 | Leaf | `atlas-1.21.7-N` | [`1.21.7/`](1.21.7/) ([notes](1.21.7/NOTES.md)) |
+| 1.21.6 | Leaf | `atlas-1.21.6-N` | [`1.21.6/`](1.21.6/) ([notes](1.21.6/NOTES.md)) |
+| 1.21.5 | Leaf | `atlas-1.21.5-N` | [`1.21.5/`](1.21.5/) ([notes](1.21.5/NOTES.md)) |
+| 1.21.4 | Leaf | `atlas-1.21.4-N` | [`1.21.4/`](1.21.4/) ([notes](1.21.4/NOTES.md)) |
+| 1.21.3 | Purpur | `atlas-1.21.3-N` | [`1.21.3/`](1.21.3/) ([notes](1.21.3/NOTES.md)) |
+| 1.21.1 | Purpur | `atlas-1.21.1-N` | [`1.21.1/`](1.21.1/) ([notes](1.21.1/NOTES.md)) |
+| 1.21 | Purpur | `atlas-1.21-N` | [`1.21/`](1.21/) ([notes](1.21/NOTES.md)) |
+| 1.20.6 | Purpur | `atlas-1.20.6-N` | [`1.20.6/`](1.20.6/) ([notes](1.20.6/NOTES.md)) |
+| 1.20.4 | Purpur | `atlas-1.20.4-N` | [`1.20.4/`](1.20.4/) ([notes](1.20.4/NOTES.md)) |
+| 1.20.2 | Purpur | `atlas-1.20.2-N` | [`1.20.2/`](1.20.2/) ([notes](1.20.2/NOTES.md)) |
+| 1.20.1 | Purpur | `atlas-1.20.1-N` | [`1.20.1/`](1.20.1/) ([notes](1.20.1/NOTES.md)) |
+| 1.20 | Purpur | `atlas-1.20-N` | [`1.20/`](1.20/) ([notes](1.20/NOTES.md)) |
 
 A new release ships for every change on whichever track it applies to, so the top of each tag
 prefix's history is always that track's current build. Same tuning philosophy on every track - a
@@ -91,7 +91,7 @@ Paper/Spigot directly, and why - is in [`ROADMAP.md`](ROADMAP.md).
    ./start.sh
    ```
 
-   (or `java -jar AtlasSpigot-26.2.jar nogui` directly — `start.sh` just adds the JVM tuning below)
+   (or `java -jar Atlas-26.2.jar nogui` directly — `start.sh` just adds the JVM tuning below)
 
 **Running on a hosting panel** (Pterodactyl, Spaceify, etc.)? Panels generate their own startup
 command and ignore `start.sh` entirely, which means the JVM tuning below never applies unless you
@@ -99,7 +99,7 @@ add it yourself — see [`PANEL_STARTUP_FLAGS.md`](PANEL_STARTUP_FLAGS.md) for t
 to a panel's dynamic memory-percentage style. You'll still need to upload the config files
 regardless, since the panel has no way to know they exist.
 
-> **Jar-only deployment?** Branding still shows "AtlasSpigot" with no config at all — that's baked
+> **Jar-only deployment?** Branding still shows "Atlas" with no config at all — that's baked
 > into the build itself. But none of the performance tuning below is active without the config
 > files, and that failure is silent (no error, it just quietly uses stock defaults). Copy the whole
 > repo, not just the jar.
@@ -128,7 +128,7 @@ anything real.
 
 ### Branding
 
-Every brand-facing string reads **AtlasSpigot** — the early `[bootstrap]` startup line, the console
+Every brand-facing string reads **Atlas** — the early `[bootstrap]` startup line, the console
 banner, the console window title, MOTD, server-list name, crash reports, the client-facing F3 brand
 text, and `Bukkit.getName()` (what plugins check for compatibility). This works **even with zero
 config present**, because it's fixed at the actual source of truth: the `Brand-Name` attribute baked
@@ -267,10 +267,10 @@ license that wouldn't be accurate.
 [![bStats Graph Data](https://bstats.org/signatures/bukkit/AtlasSpigot.svg)](https://bstats.org/plugin/bukkit/AtlasSpigot/33733)
 
 This is a real, registered bStats project (id `33733`) - it started at zero, same as any new software's
-does, and only grows as real AtlasSpigot servers actually run and report in. Getting the jar to report
+does, and only grows as real Atlas servers actually run and report in. Getting the jar to report
 here at all took two real fixes, not just a config toggle:
 
-1. The bundled metrics client was originally hardcoded to Leaf's own bStats project - every AtlasSpigot
+1. The bundled metrics client was originally hardcoded to Leaf's own bStats project - every Atlas
    server was silently reporting into *Leaf's* stats, not one of its own.
 2. The special curated "Server Software" category Paper/Purpur/Leaf/Yatopia use (the one behind their
    `signatures/server-implementation/*` badges) turned out not to be self-serve creatable - it's an
@@ -278,6 +278,11 @@ here at all took two real fixes, not just a config toggle:
    self-serve is registering as a regular Bukkit/Spigot service, which is what this project actually is -
    so the jar's metrics client was rewritten to speak that schema (a real service id, not just a name
    string) instead. See [`metrics-atlas-bstats-service.diff`](source-patches/metrics-atlas-bstats-service.diff).
+
+The service is still registered on bStats under the old name, `AtlasSpigot`, so the badge above and
+the `atlasspigot_version` chart key both still use it. Renaming the code to match would have pointed
+the jar at a service and a chart that do not exist and silently thrown the data away; the name has to
+be changed on bStats first, and the code follows after.
 
 Made with <span style="color: #e25555;">&#9829;</span> on Earth.
 

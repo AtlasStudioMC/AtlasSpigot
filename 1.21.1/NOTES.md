@@ -15,5 +15,5 @@ project). Confirmed by checking the repo's actual listing: `1.10.105-SNAPSHOT` i
 anymore, but `1.10.84-SNAPSHOT` and `1.10.119-SNAPSHOT` still are. Bumped to `1.10.119-SNAPSHOT`
 (the nearest available, and newer rather than older) purely to make this historical branch
 buildable again - this only affects the bundled spark profiler dependency resolution at build
-time, not any AtlasSpigot tuning or gameplay behavior. Documented in
+time, not any Atlas tuning or gameplay behavior. Documented in
 [`source-patches/build-manifest-brand-fix.diff`](source-patches/build-manifest-brand-fix.diff).

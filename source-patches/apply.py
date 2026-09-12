@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply every AtlasSpigot source patch to a freshly patched Leaf tree.
+"""Apply every Atlas source patch to a freshly patched Leaf tree.
 
 The .diff files in this directory are written to be *read* - they have no valid hunk headers and
 `git apply` rejects them. That was fine when there were five branding patches; with fourteen it
@@ -29,15 +29,17 @@ def patch(path, pairs, label):
 
 # ---------------------------------------------------------------- branding
 patch("leaf-server/build.gradle.kts", [
+    ('"Implementation-Title" to "Leaf", // Leaf - Rebrand',
+     '"Implementation-Title" to "Atlas", // Leaf - Rebrand // Atlas - Rebrand'),
     ('"Specification-Title" to "Leaf", // Leaf - Rebrand',
-     '"Specification-Title" to "AtlasSpigot", // Leaf - Rebrand // AtlasSpigot - Rebrand'),
+     '"Specification-Title" to "Atlas", // Leaf - Rebrand // Atlas - Rebrand'),
     ('"Brand-Name" to "Leaf", // Leaf - Rebrand',
-     '"Brand-Name" to "AtlasSpigot", // Leaf - Rebrand // AtlasSpigot - Rebrand'),
+     '"Brand-Name" to "Atlas", // Leaf - Rebrand // Atlas - Rebrand'),
 ], "brand: jar manifest")
 
 patch(PS + "io/papermc/paper/ServerBuildInfoImpl.java", [
     ('private static final String BRAND_LEAF_NAME = "Leaf";',
-     'private static final String BRAND_LEAF_NAME = "AtlasSpigot"; // AtlasSpigot - fallback default'),
+     'private static final String BRAND_LEAF_NAME = "Atlas"; // Atlas - fallback default'),
 ], "brand: ServerBuildInfoImpl")
 
 patch(PS + "org/bukkit/craftbukkit/CraftServer.java", [
@@ -47,11 +49,11 @@ patch(PS + "org/bukkit/craftbukkit/CraftServer.java", [
 
 patch("leaf-server/src/main/java/org/dreeam/leaf/config/LeafConfig.java", [
     ('protected static final String GLOBAL_CONFIG_FILE = "leaf-global.yml";',
-     'protected static final String GLOBAL_CONFIG_FILE = "atlas-global.yml"; // AtlasSpigot'),
+     'protected static final String GLOBAL_CONFIG_FILE = "atlas-global.yml"; // Atlas'),
     ('protected static final String DEFAULT_WORLD_CONFIG_FILE = "leaf-world-defaults.yml"; // Leaf TODO - Per world config',
-     'protected static final String DEFAULT_WORLD_CONFIG_FILE = "atlas-world-defaults.yml"; // AtlasSpigot'),
+     'protected static final String DEFAULT_WORLD_CONFIG_FILE = "atlas-world-defaults.yml"; // Atlas'),
     ('"config/leaf-global.yml",',
-     'CONFIG_DIRECTORY.getName() + "/" + GLOBAL_CONFIG_FILE, // AtlasSpigot'),
+     'CONFIG_DIRECTORY.getName() + "/" + GLOBAL_CONFIG_FILE, // Atlas'),
 ], "brand: config filenames")
 
 patch(MC.replace("java/net/minecraft/", "java/org/purpurmc/purpur/") + "PurpurConfig.java", [
@@ -61,21 +63,21 @@ patch(MC.replace("java/net/minecraft/", "java/org/purpurmc/purpur/") + "PurpurCo
 
 patch(PS + "org/bukkit/craftbukkit/Main.java", [
     ('.defaultsTo(new File("purpur.yml"))',
-     '.defaultsTo(new File("atlas.yml")) // AtlasSpigot'),
+     '.defaultsTo(new File("atlas.yml")) // Atlas'),
 ], "brand: atlas.yml flag")
 
 patch(PS + "com/destroystokyo/paper/Metrics.java", [
     ('private static final String URL = "https://bstats.org/submitData/server-implementation";',
-     'private static final String URL = "https://bStats.org/api/v2/data/bukkit"; // AtlasSpigot\n\n    private static final int SERVICE_ID = 33733; // AtlasSpigot - our registered bStats service'),
+     'private static final String URL = "https://bStats.org/api/v2/data/bukkit"; // Atlas\n\n    private static final int SERVICE_ID = 33733; // Atlas - our registered bStats service'),
     ('    private JSONObject getPluginData() {\n        JSONObject data = new JSONObject();\n\n        data.put("pluginName", name); // Append the name of the server software',
-     '    private JSONObject getServiceData() {\n        JSONObject data = new JSONObject();\n\n        data.put("id", SERVICE_ID); // AtlasSpigot - v2 per-service shape'),
+     '    private JSONObject getServiceData() {\n        JSONObject data = new JSONObject();\n\n        data.put("id", SERVICE_ID); // Atlas - v2 per-service shape'),
     ('        JSONObject data = new JSONObject();\n\n        data.put("serverUUID", serverUUID);',
-     '        JSONObject data = new JSONObject();\n\n        data.put("serverUUID", serverUUID);\n        data.put("metricsVersion", "3.2.1"); // AtlasSpigot\n        data.put("playerAmount", Bukkit.getOnlinePlayers().size());\n        data.put("onlineMode", Bukkit.getOnlineMode() ? 1 : 0);\n        data.put("bukkitVersion", Bukkit.getVersion());\n        data.put("bukkitName", Bukkit.getName());\n        data.put("javaVersion", System.getProperty("java.version"));'),
+     '        JSONObject data = new JSONObject();\n\n        data.put("serverUUID", serverUUID);\n        data.put("metricsVersion", "3.2.1"); // Atlas\n        data.put("playerAmount", Bukkit.getOnlinePlayers().size());\n        data.put("onlineMode", Bukkit.getOnlineMode() ? 1 : 0);\n        data.put("bukkitVersion", Bukkit.getVersion());\n        data.put("bukkitName", Bukkit.getName());\n        data.put("javaVersion", System.getProperty("java.version"));'),
     ('        JSONArray pluginData = new JSONArray();\n        pluginData.add(getPluginData());\n        data.put("plugins", pluginData);',
-     '        data.put("service", getServiceData()); // AtlasSpigot - v2 schema'),
-    ('Metrics metrics = new Metrics("Leaf"', 'Metrics metrics = new Metrics("AtlasSpigot"'),
-    ('final String leafVersion;', 'final String atlasVersion; // AtlasSpigot'),
-    ('leafVersion = "git-Leaf-%s-%s".formatted', 'atlasVersion = "git-AtlasSpigot-%s-%s".formatted'),
+     '        data.put("service", getServiceData()); // Atlas - v2 schema'),
+    ('Metrics metrics = new Metrics("Leaf"', 'Metrics metrics = new Metrics("Atlas"'),
+    ('final String leafVersion;', 'final String atlasVersion; // Atlas'),
+    ('leafVersion = "git-Leaf-%s-%s".formatted', 'atlasVersion = "git-Atlas-%s-%s".formatted'),
     ('leafVersion = "unknown";', 'atlasVersion = "unknown";'),
     ('new Metrics.SimplePie("leaf_version", () -> leafVersion)',
      'new Metrics.SimplePie("atlasspigot_version", () -> atlasVersion)'),
@@ -84,15 +86,15 @@ patch(PS + "com/destroystokyo/paper/Metrics.java", [
 # ------------------------------------------------------- optimisation patches
 patch(MC + "world/entity/LivingEntity.java", [
     ("        for (EquipmentSlot slot : EquipmentSlot.VALUES_ARRAY) { // Gale - JettPack - reduce array allocations",
-     "        // AtlasSpigot start - skip Bukkit conversions nothing is listening for\n"
+     "        // Atlas start - skip Bukkit conversions nothing is listening for\n"
      "        final boolean equipmentChangedListened = io.papermc.paper.event.entity.EntityEquipmentChangedEvent.getHandlerList().getRegisteredListeners().length > 0;\n"
      "        final boolean armorChangeListened = com.destroystokyo.paper.event.player.PlayerArmorChangeEvent.getHandlerList().getRegisteredListeners().length > 0;\n"
-     "        // AtlasSpigot end\n"
+     "        // Atlas end\n"
      "        for (EquipmentSlot slot : EquipmentSlot.VALUES_ARRAY) { // Gale - JettPack - reduce array allocations"),
     ("                final org.bukkit.inventory.ItemStack oldItem = CraftItemStack.asBukkitCopy(previous);\n"
      "                final org.bukkit.inventory.ItemStack newItem = CraftItemStack.asBukkitCopy(current);\n"
      "                if (this instanceof ServerPlayer && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {",
-     "                // AtlasSpigot start - only convert when an event will read them\n"
+     "                // Atlas start - only convert when an event will read them\n"
      "                final boolean armorChangeWanted = armorChangeListened && this instanceof ServerPlayer && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR;\n"
      "                org.bukkit.inventory.ItemStack oldItem = null;\n"
      "                org.bukkit.inventory.ItemStack newItem = null;\n"
@@ -102,14 +104,14 @@ patch(MC + "world/entity/LivingEntity.java", [
      "                }\n"
      "                if (armorChangeWanted) {"),
     ("                    equipmentChanges = Maps.newEnumMap(org.bukkit.inventory.EquipmentSlot.class); // Paper - EntityEquipmentChangedEvent",
-     "                    if (equipmentChangedListened) equipmentChanges = Maps.newEnumMap(org.bukkit.inventory.EquipmentSlot.class); // AtlasSpigot"),
+     "                    if (equipmentChangedListened) equipmentChanges = Maps.newEnumMap(org.bukkit.inventory.EquipmentSlot.class); // Atlas"),
     ("                equipmentChanges.put(org.bukkit.craftbukkit.CraftEquipmentSlot.getSlot(slot), new EquipmentChangeImpl(oldItem, newItem)); // Paper - EntityEquipmentChangedEvent",
-     "                if (equipmentChangedListened) equipmentChanges.put(org.bukkit.craftbukkit.CraftEquipmentSlot.getSlot(slot), new EquipmentChangeImpl(oldItem, newItem)); // AtlasSpigot"),
+     "                if (equipmentChangedListened) equipmentChanges.put(org.bukkit.craftbukkit.CraftEquipmentSlot.getSlot(slot), new EquipmentChangeImpl(oldItem, newItem)); // Atlas"),
     ("            new io.papermc.paper.event.entity.EntityEquipmentChangedEvent(this.getBukkitLivingEntity(), equipmentChanges).callEvent(); // Paper - EntityEquipmentChangedEvent",
-     "            if (equipmentChangedListened) new io.papermc.paper.event.entity.EntityEquipmentChangedEvent(this.getBukkitLivingEntity(), equipmentChanges).callEvent(); // AtlasSpigot"),
+     "            if (equipmentChangedListened) new io.papermc.paper.event.entity.EntityEquipmentChangedEvent(this.getBukkitLivingEntity(), equipmentChanges).callEvent(); // Atlas"),
     ("                        if (new com.destroystokyo.paper.event.entity.EntityJumpEvent(getBukkitLivingEntity()).callEvent()) { // Paper - Entity Jump API",
      "                        if (com.destroystokyo.paper.event.entity.EntityJumpEvent.getHandlerList().getRegisteredListeners().length == 0\n"
-     "                            || new com.destroystokyo.paper.event.entity.EntityJumpEvent(getBukkitLivingEntity()).callEvent()) { // AtlasSpigot - skip when unlistened"),
+     "                            || new com.destroystokyo.paper.event.entity.EntityJumpEvent(getBukkitLivingEntity()).callEvent()) { // Atlas - skip when unlistened"),
 ], "opt: equipment conversions + jump event")
 
 patch(MC + "world/entity/Entity.java", [
@@ -119,7 +121,7 @@ patch(MC + "world/entity/Entity.java", [
      "                if (!event.callEvent()) {\n                    return;\n                }\n"
      "                delta = event.getKnockback();\n            }\n"
      "            this.setDeltaMovement(this.getDeltaMovement().add(delta.getX(), delta.getY(), delta.getZ()));",
-     "            // AtlasSpigot start - no Bukkit Vector for pushes nothing observes\n"
+     "            // Atlas start - no Bukkit Vector for pushes nothing observes\n"
      "            double pushX = xa;\n            double pushY = ya;\n            double pushZ = za;\n"
      "            if (pushingEntity != null\n"
      "                && io.papermc.paper.event.entity.EntityPushedByEntityAttackEvent.getHandlerList().getRegisteredListeners().length != 0) {\n"
@@ -129,49 +131,49 @@ patch(MC + "world/entity/Entity.java", [
      "                delta = event.getKnockback();\n"
      "                pushX = delta.getX();\n                pushY = delta.getY();\n                pushZ = delta.getZ();\n            }\n"
      "            this.setDeltaMovement(this.getDeltaMovement().add(pushX, pushY, pushZ));\n"
-     "            // AtlasSpigot end"),
+     "            // Atlas end"),
     ("    public void setAirSupply(final int supply) {\n        // CraftBukkit start",
      "    public void setAirSupply(final int supply) {\n"
-     "        // AtlasSpigot start - fast path when the event cannot change anything\n"
+     "        // Atlas start - fast path when the event cannot change anything\n"
      "        if (!this.valid || org.bukkit.event.entity.EntityAirChangeEvent.getHandlerList().getRegisteredListeners().length == 0) {\n"
      "            this.entityData.set(DATA_AIR_SUPPLY_ID, supply);\n            return;\n        }\n"
-     "        // AtlasSpigot end\n        // CraftBukkit start"),
+     "        // Atlas end\n        // CraftBukkit start"),
 ], "opt: push vector + air supply")
 
 patch(MC + "world/entity/ExperienceOrb.java", [
     ("        if (!new com.destroystokyo.paper.event.entity.ExperienceOrbMergeEvent((org.bukkit.entity.ExperienceOrb) this.getBukkitEntity(), (org.bukkit.entity.ExperienceOrb) orb.getBukkitEntity()).callEvent()) {",
      "        if (com.destroystokyo.paper.event.entity.ExperienceOrbMergeEvent.getHandlerList().getRegisteredListeners().length != 0\n"
-     "            && !new com.destroystokyo.paper.event.entity.ExperienceOrbMergeEvent((org.bukkit.entity.ExperienceOrb) this.getBukkitEntity(), (org.bukkit.entity.ExperienceOrb) orb.getBukkitEntity()).callEvent()) { // AtlasSpigot"),
+     "            && !new com.destroystokyo.paper.event.entity.ExperienceOrbMergeEvent((org.bukkit.entity.ExperienceOrb) this.getBukkitEntity(), (org.bukkit.entity.ExperienceOrb) orb.getBukkitEntity()).callEvent()) { // Atlas"),
 ], "opt: xp orb merge")
 
 patch(MC + "server/level/ServerLevel.java", [
     ("            new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity(), ServerLevel.this.getWorld()).callEvent(); // Paper - fire while valid",
-     "            if (com.destroystokyo.paper.event.entity.EntityAddToWorldEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
+     "            if (com.destroystokyo.paper.event.entity.EntityAddToWorldEvent.getHandlerList().getRegisteredListeners().length != 0) // Atlas\n"
      "            new com.destroystokyo.paper.event.entity.EntityAddToWorldEvent(entity.getBukkitEntity(), ServerLevel.this.getWorld()).callEvent(); // Paper - fire while valid"),
     ("            new com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent(entity.getBukkitEntity(), ServerLevel.this.getWorld()).callEvent(); // Paper - fire while valid",
-     "            if (com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
+     "            if (com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent.getHandlerList().getRegisteredListeners().length != 0) // Atlas\n"
      "            new com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent(entity.getBukkitEntity(), ServerLevel.this.getWorld()).callEvent(); // Paper - fire while valid"),
 ], "opt: world tracking events")
 
 patch(PS + "org/bukkit/craftbukkit/event/CraftEventFactory.java", [
     ("    public static boolean callItemMergeEvent(ItemEntity merging, ItemEntity mergingWith) {\n        org.bukkit.entity.Item entityMerging",
      "    public static boolean callItemMergeEvent(ItemEntity merging, ItemEntity mergingWith) {\n"
-     "        // AtlasSpigot - veto-only; with no listener the answer is always true\n"
+     "        // Atlas - veto-only; with no listener the answer is always true\n"
      "        if (ItemMergeEvent.getHandlerList().getRegisteredListeners().length == 0) {\n            return true;\n        }\n"
      "        org.bukkit.entity.Item entityMerging"),
     ("    public static void callEntitiesLoadEvent(Level level, ChunkPos pos, List<Entity> entities) {\n        List<org.bukkit.entity.Entity> bukkitEntities",
      "    public static void callEntitiesLoadEvent(Level level, ChunkPos pos, List<Entity> entities) {\n"
-     "        // AtlasSpigot - streams every entity and forces CraftEntity creation; returns void\n"
+     "        // Atlas - streams every entity and forces CraftEntity creation; returns void\n"
      "        if (EntitiesLoadEvent.getHandlerList().getRegisteredListeners().length == 0) {\n            return;\n        }\n"
      "        List<org.bukkit.entity.Entity> bukkitEntities"),
     ("    public static void callEntityRemoveEvent(Entity entity, EntityRemoveEvent.Cause cause) {\n        if (entity instanceof ServerPlayer) {",
      "    public static void callEntityRemoveEvent(Entity entity, EntityRemoveEvent.Cause cause) {\n"
-     "        // AtlasSpigot - universal removal path; returns void and getBukkitEntity() creates wrappers\n"
+     "        // Atlas - universal removal path; returns void and getBukkitEntity() creates wrappers\n"
      "        if (EntityRemoveEvent.getHandlerList().getRegisteredListeners().length == 0) {\n            return;\n        }\n"
      "        if (entity instanceof ServerPlayer) {"),
     ("    public static void callEntitiesUnloadEvent(Level level, ChunkPos pos, List<Entity> entities) {\n        List<org.bukkit.entity.Entity> bukkitEntities",
      "    public static void callEntitiesUnloadEvent(Level level, ChunkPos pos, List<Entity> entities) {\n"
-     "        // AtlasSpigot - same as the load side, on every chunk unload\n"
+     "        // Atlas - same as the load side, on every chunk unload\n"
      "        if (EntitiesUnloadEvent.getHandlerList().getRegisteredListeners().length == 0) {\n            return;\n        }\n"
      "        List<org.bukkit.entity.Entity> bukkitEntities"),
 ], "opt: item merge + chunk entity events")
@@ -179,21 +181,21 @@ patch(PS + "org/bukkit/craftbukkit/event/CraftEventFactory.java", [
 patch(MC + "world/level/chunk/LevelChunk.java", [
     ("            org.bukkit.Chunk bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);\n"
      "            server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkLoadEvent(bukkitChunk, this.needsDecoration));",
-     "            // AtlasSpigot start - notification-only; CraftChunk built lazily for populators\n"
+     "            // Atlas start - notification-only; CraftChunk built lazily for populators\n"
      "            org.bukkit.Chunk bukkitChunk = null;\n"
      "            if (org.bukkit.event.world.ChunkLoadEvent.getHandlerList().getRegisteredListeners().length != 0) {\n"
      "                bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);\n"
      "                server.getPluginManager().callEvent(new org.bukkit.event.world.ChunkLoadEvent(bukkitChunk, this.needsDecoration));\n"
-     "            }\n            // AtlasSpigot end"),
+     "            }\n            // Atlas end"),
     ("                org.bukkit.World world = this.level.getWorld();\n                if (world != null) {",
-     "                if (bukkitChunk == null) bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this); // AtlasSpigot - populators need it\n"
+     "                if (bukkitChunk == null) bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this); // Atlas - populators need it\n"
      "                org.bukkit.World world = this.level.getWorld();\n                if (world != null) {"),
     ("        org.bukkit.Chunk bukkitChunk = new org.bukkit.craftbukkit.CraftChunk(this);\n"
      "        org.bukkit.event.world.ChunkUnloadEvent unloadEvent = new org.bukkit.event.world.ChunkUnloadEvent(bukkitChunk, true); // Paper - rewrite chunk system - force save to true so that mustNotSave is correctly set below\n"
      "        server.getPluginManager().callEvent(unloadEvent);\n"
      "        // note: saving can be prevented, but not forced if no saving is actually required\n"
      "        this.mustNotSave = !unloadEvent.isSaveChunk();",
-     "        // AtlasSpigot start - event is built with saveChunk=true and only a listener can call\n"
+     "        // Atlas start - event is built with saveChunk=true and only a listener can call\n"
      "        // setSaveChunk(), so with none registered mustNotSave is definitively false.\n"
      "        if (org.bukkit.event.world.ChunkUnloadEvent.getHandlerList().getRegisteredListeners().length == 0) {\n"
      "            this.mustNotSave = false;\n        } else {\n"
@@ -201,7 +203,7 @@ patch(MC + "world/level/chunk/LevelChunk.java", [
      "        org.bukkit.event.world.ChunkUnloadEvent unloadEvent = new org.bukkit.event.world.ChunkUnloadEvent(bukkitChunk, true); // Paper - rewrite chunk system - force save to true so that mustNotSave is correctly set below\n"
      "        server.getPluginManager().callEvent(unloadEvent);\n"
      "        // note: saving can be prevented, but not forced if no saving is actually required\n"
-     "        this.mustNotSave = !unloadEvent.isSaveChunk();\n        }\n        // AtlasSpigot end"),
+     "        this.mustNotSave = !unloadEvent.isSaveChunk();\n        }\n        // Atlas end"),
 ], "opt: chunk load/unload events")
 
 
@@ -211,7 +213,7 @@ patch(MC + "world/level/chunk/LevelChunk.java", [
 BULK = [(
     "leaf-server/src/minecraft/java/net/minecraft/world/level/block",
     "if (!new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } // Paper - Add EntityInsideBlockEvent",
-    "if (io.papermc.paper.event.entity.EntityInsideBlockEvent.getHandlerList().getRegisteredListeners().length != 0 // AtlasSpigot - skip CraftBlock + event when unlistened\n"
+    "if (io.papermc.paper.event.entity.EntityInsideBlockEvent.getHandlerList().getRegisteredListeners().length != 0 // Atlas - skip CraftBlock + event when unlistened\n"
     "            && !new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } // Paper - Add EntityInsideBlockEvent",
     "opt: entity-inside-block event",
     20,  # minimum expected hits; fewer means upstream changed the shape
@@ -246,22 +248,22 @@ def apply_bulk(root):
 patch(MC + "world/effect/MobEffectInstance.java", [
     ("            && new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent() // Paper - Add EntityEffectTickEvent",
      "            && (io.papermc.paper.event.entity.EntityEffectTickEvent.getHandlerList().getRegisteredListeners().length == 0\n"
-     "                || new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent()) // AtlasSpigot"),
+     "                || new io.papermc.paper.event.entity.EntityEffectTickEvent(target.getBukkitLivingEntity(), org.bukkit.craftbukkit.potion.CraftPotionEffectType.minecraftHolderToBukkit(this.effect), this.amplifier).callEvent()) // Atlas"),
 ], "opt: per-tick effect event")
 
 patch(MC + "server/MinecraftServer.java", [
     ("        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events",
-     "        if (com.destroystokyo.paper.event.server.ServerTickStartEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
+     "        if (com.destroystokyo.paper.event.server.ServerTickStartEvent.getHandlerList().getRegisteredListeners().length != 0) // Atlas\n"
      "        new com.destroystokyo.paper.event.server.ServerTickStartEvent(this.tickCount+1).callEvent(); // Paper - Server Tick Events"),
     ("        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();",
-     "        if (com.destroystokyo.paper.event.server.ServerTickEndEvent.getHandlerList().getRegisteredListeners().length != 0) // AtlasSpigot\n"
+     "        if (com.destroystokyo.paper.event.server.ServerTickEndEvent.getHandlerList().getRegisteredListeners().length != 0) // Atlas\n"
      "        new com.destroystokyo.paper.event.server.ServerTickEndEvent(this.tickCount, ((double)(endTime - this.currentTickStart) / 1000000D), remaining).callEvent();"),
 ], "opt: server tick start/end events")
 
 
 patch(MC + "world/entity/vehicle/boat/AbstractBoat.java", [
     ("        new org.bukkit.event.vehicle.VehicleUpdateEvent(vehicle).callEvent();\n\n        if (this.lastLocation != null && !this.lastLocation.equals(to)) {",
-     "        if (org.bukkit.event.vehicle.VehicleUpdateEvent.getHandlerList().getRegisteredListeners().length != 0) new org.bukkit.event.vehicle.VehicleUpdateEvent(vehicle).callEvent(); // AtlasSpigot\n\n        if (org.bukkit.event.vehicle.VehicleMoveEvent.getHandlerList().getRegisteredListeners().length != 0 && this.lastLocation != null && !this.lastLocation.equals(to)) { // AtlasSpigot"),
+     "        if (org.bukkit.event.vehicle.VehicleUpdateEvent.getHandlerList().getRegisteredListeners().length != 0) new org.bukkit.event.vehicle.VehicleUpdateEvent(vehicle).callEvent(); // Atlas\n\n        if (org.bukkit.event.vehicle.VehicleMoveEvent.getHandlerList().getRegisteredListeners().length != 0 && this.lastLocation != null && !this.lastLocation.equals(to)) { // Atlas"),
 ], "opt: boat tick events")
 
 # ---- round 4: block-inside, effect tick, tick loop, spawn paths ----
@@ -273,7 +275,7 @@ def _patch_entity_inside_block(root):
            "org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } "
            "// Paper - Add EntityInsideBlockEvent")
     NEW = ("if (io.papermc.paper.event.entity.EntityInsideBlockEvent.getHandlerList().getRegisteredListeners().length != 0 "
-           "// AtlasSpigot - skip CraftBlock + event when unlistened\n"
+           "// Atlas - skip CraftBlock + event when unlistened\n"
            "            && !new io.papermc.paper.event.entity.EntityInsideBlockEvent(entity.getBukkitEntity(), "
            "org.bukkit.craftbukkit.block.CraftBlock.at(level, pos)).callEvent()) { return; } "
            "// Paper - Add EntityInsideBlockEvent")

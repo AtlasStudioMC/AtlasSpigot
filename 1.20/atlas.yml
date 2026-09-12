@@ -117,7 +117,7 @@ settings:
       stonecutter: <player> has sawed themself in half
   clamp-attributes: true
   tps-catchup: true
-  server-mod-name: AtlasSpigot
+  server-mod-name: Atlas
   limit-armor: true
   broadcasts:
     advancement:

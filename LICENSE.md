@@ -1,9 +1,9 @@
-# AtlasSpigot license
+# Atlas license
 
-AtlasSpigot inherits licenses from upstream projects, plus MIT for this repo's own additions. Full
+Atlas inherits licenses from upstream projects, plus MIT for this repo's own additions. Full
 text for each license below lives in [`licenses/`](licenses/) - copied verbatim from
 [Winds-Studio/Leaf](https://github.com/Winds-Studio/Leaf), since Leaf's own patches (and their
-licensing) are what AtlasSpigot is built from.
+licensing) are what Atlas is built from.
 
 | Covers | License | Full text |
 |---|---|---|

@@ -1,4 +1,4 @@
-package net.atlasspigot.bench;
+package net.atlas.bench;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;

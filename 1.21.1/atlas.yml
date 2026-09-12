@@ -185,7 +185,7 @@ settings:
     upnp-port-forwarding: false
     max-joins-per-second: false
     kick-for-out-of-order-chat: true
-  server-mod-name: AtlasSpigot
+  server-mod-name: Atlas
   register-minecraft-debug-commands: false
 config-version: 37
 world-settings:

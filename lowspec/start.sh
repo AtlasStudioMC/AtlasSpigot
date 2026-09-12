@@ -1,5 +1,5 @@
 #!/bin/bash
-# AtlasSpigot 26.2 - low-spec profile
+# Atlas 26.2 - low-spec profile
 #
 # Sized for roughly 3GB total RAM, an older CPU that is already near 100% thread usage,
 # and ~10GB of disk.
@@ -41,4 +41,4 @@ java -Xms${MEMORY} -Xmx${MEMORY} \
   -XX:MaxTenuringThreshold=1 \
   -Dusing.aikars.flags=https://mcflags.emc.gs \
   -Daikars.new.flags=true \
-  -jar AtlasSpigot-26.2.jar nogui
+  -jar Atlas-26.2.jar nogui

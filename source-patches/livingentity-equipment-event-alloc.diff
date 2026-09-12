@@ -16,17 +16,17 @@ listener exists, the copies are made and both events fire exactly as before.
 --- a/leaf-server/src/minecraft/java/net/minecraft/world/entity/LivingEntity.java
 +++ b/leaf-server/src/minecraft/java/net/minecraft/world/entity/LivingEntity.java
 @@ -3730,6 +3730,13 @@
-+        // AtlasSpigot start - skip Bukkit conversions nothing is listening for
++        // Atlas start - skip Bukkit conversions nothing is listening for
 +        final boolean equipmentChangedListened = io.papermc.paper.event.entity.EntityEquipmentChangedEvent.getHandlerList().getRegisteredListeners().length > 0;
 +        final boolean armorChangeListened = com.destroystokyo.paper.event.player.PlayerArmorChangeEvent.getHandlerList().getRegisteredListeners().length > 0;
-+        // AtlasSpigot end
++        // Atlas end
          for (EquipmentSlot slot : EquipmentSlot.VALUES_ARRAY) { // Gale - JettPack - reduce array allocations
 
 @@ -3736,10 +3743,17 @@
 -                final org.bukkit.inventory.ItemStack oldItem = CraftItemStack.asBukkitCopy(previous);
 -                final org.bukkit.inventory.ItemStack newItem = CraftItemStack.asBukkitCopy(current);
 -                if (this instanceof ServerPlayer && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
-+                // AtlasSpigot start - only convert to Bukkit types when an event will actually read them
++                // Atlas start - only convert to Bukkit types when an event will actually read them
 +                final boolean armorChangeWanted = armorChangeListened && this instanceof ServerPlayer && slot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR;
 +                org.bukkit.inventory.ItemStack oldItem = null;
 +                org.bukkit.inventory.ItemStack newItem = null;
@@ -37,18 +37,18 @@ listener exists, the copies are made and both events fire exactly as before.
 +                if (armorChangeWanted) {
                      new com.destroystokyo.paper.event.player.PlayerArmorChangeEvent(...).callEvent();
                  }
-+                // AtlasSpigot end
++                // Atlas end
 
                  if (changedItems == null) {
                      changedItems = Maps.newEnumMap(EquipmentSlot.class);
 -                    equipmentChanges = Maps.newEnumMap(org.bukkit.inventory.EquipmentSlot.class);
-+                    if (equipmentChangedListened) equipmentChanges = Maps.newEnumMap(org.bukkit.inventory.EquipmentSlot.class); // AtlasSpigot - only when listened for
++                    if (equipmentChangedListened) equipmentChanges = Maps.newEnumMap(org.bukkit.inventory.EquipmentSlot.class); // Atlas - only when listened for
                  }
 
                  changedItems.put(slot, current);
 -                equipmentChanges.put(CraftEquipmentSlot.getSlot(slot), new EquipmentChangeImpl(oldItem, newItem));
-+                if (equipmentChangedListened) equipmentChanges.put(org.bukkit.craftbukkit.CraftEquipmentSlot.getSlot(slot), new EquipmentChangeImpl(oldItem, newItem)); // AtlasSpigot - only when listened for
++                if (equipmentChangedListened) equipmentChanges.put(org.bukkit.craftbukkit.CraftEquipmentSlot.getSlot(slot), new EquipmentChangeImpl(oldItem, newItem)); // Atlas - only when listened for
 
 @@ -3790,1 +3804,1 @@
 -            new io.papermc.paper.event.entity.EntityEquipmentChangedEvent(this.getBukkitLivingEntity(), equipmentChanges).callEvent();
-+            if (equipmentChangedListened) new io.papermc.paper.event.entity.EntityEquipmentChangedEvent(this.getBukkitLivingEntity(), equipmentChanges).callEvent(); // AtlasSpigot - skip when unlistened
++            if (equipmentChangedListened) new io.papermc.paper.event.entity.EntityEquipmentChangedEvent(this.getBukkitLivingEntity(), equipmentChanges).callEvent(); // Atlas - skip when unlistened

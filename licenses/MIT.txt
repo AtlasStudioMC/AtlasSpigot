@@ -1,5 +1,5 @@
 Below is the MIT License (MIT),
-which applies only to parts of Leaf (that AtlasSpigot is built on) or this repository's own additions that are specifically and explicitly released under MIT.
+which applies only to parts of Leaf (that Atlas is built on) or this repository's own additions that are specifically and explicitly released under MIT.
 
 MIT License
 
