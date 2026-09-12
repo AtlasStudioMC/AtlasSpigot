@@ -160,6 +160,26 @@ optimised sheep offspring colour is on.
   makes that a config knob shouldn't quietly cancel.
 - **`increase-time-statistics`** — makes `CROUCH_TIME`, `TIME_SINCE_DEATH` and `TIME_SINCE_REST`
   sampled approximations; `TIME_SINCE_REST` drives phantom spawning.
+- **`network.OptimizeNonFlushPacketSending`** — sends non-flush packets via Netty's `lazyExecute`,
+  skipping the thread wakeup that scheduling a packet normally costs. That wakeup is per-packet
+  overhead on the path that carries movement and entity updates, so this is a real latency win on
+  a busy server. It stays off for the same reason as `hopper.disable-move-event`: its own config
+  comment warns it is **not compatible with ProtocolLib** and may break anything else that
+  rewrites packet handling. ProtocolLib is too common to opt everyone into that silently. Worth
+  turning on deliberately if you have checked your plugin list and ProtocolLib is not in it —
+  it needs a restart, not a reload.
+
+### Already on, on the network path
+
+Listed because they are easy to miss when looking for something left to tune — these are set and
+doing their job:
+
+| Setting | Value | Effect |
+|---|---|---|
+| `reduce-packets.reduce-entity-move-packets` | `true` | Drops entity move packets that would not change what the client renders. |
+| `reduce-packets.reduce-entity-motion-packets` | `true` | Same for entity velocity packets, the ones that dominate bandwidth when a lot is moving. |
+| `optimize-player-movement` | `true` | Skips redundant edge checks and view-distance recalculation per movement packet. |
+| `entity-broadcast-range-percentage` | `50` | Entities are sent at half the usual distance — the largest single packet saving in the config. |
 
 ## Source patches
 
